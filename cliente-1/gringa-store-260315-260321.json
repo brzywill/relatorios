@@ -1,0 +1,169 @@
+{
+  "cliente": "Gringa Store",
+  "periodo": {
+    "label": "15/03/2026 – 21/03/2026",
+    "inicio": "2026-03-15",
+    "fim": "2026-03-21",
+    "tipo": "semanal"
+  },
+  "meta": {
+    "kpis": {
+      "investimento": {
+        "valor": "R$ 366,97",
+        "delta": null,
+        "tendencia": null
+      },
+      "alcance": {
+        "valor": "13.483",
+        "delta": null,
+        "tendencia": null
+      },
+      "impressoes": {
+        "valor": "19.884",
+        "delta": null,
+        "tendencia": null
+      },
+      "frequencia": {
+        "valor": "1,47",
+        "delta": null,
+        "tendencia": null
+      },
+      "cliques": {
+        "valor": "396",
+        "delta": null,
+        "tendencia": null
+      },
+      "ctr": {
+        "valor": "4,98%",
+        "delta": null,
+        "tendencia": null
+      },
+      "cpc": {
+        "valor": "R$ 1,01",
+        "delta": null,
+        "tendencia": null
+      },
+      "adicoes_carrinho": {
+        "valor": "37",
+        "delta": null,
+        "tendencia": null
+      },
+      "custo_carrinho": {
+        "valor": "R$ 9,92",
+        "delta": null,
+        "tendencia": null
+      },
+      "compras": {
+        "valor": "4",
+        "delta": null,
+        "tendencia": null
+      },
+      "custo_compra": {
+        "valor": "R$ 91,74",
+        "delta": null,
+        "tendencia": null
+      },
+      "receita": {
+        "valor": "R$ 1.305,83",
+        "delta": null,
+        "tendencia": null
+      }
+    },
+    "roas": {
+      "valor": "3,56×",
+      "investimento": "R$ 366,97",
+      "receita": "R$ 1.305,83"
+    },
+    "funil": {
+      "alcance": 13483,
+      "cliques": 396,
+      "adicoes_carrinho": 37,
+      "compras": 4,
+      "abandono_carrinho": 33
+    },
+    "distribuicao_tipo": [
+      {
+        "tipo": "Por Impressão",
+        "resultados": 19884,
+        "custo_unitario": "R$ 0,02"
+      },
+      {
+        "tipo": "Por Clique",
+        "resultados": 396,
+        "custo_unitario": "R$ 1,01"
+      },
+      {
+        "tipo": "Por Adição ao Carrinho",
+        "resultados": 37,
+        "custo_unitario": "R$ 9,92"
+      },
+      {
+        "tipo": "Por Compra",
+        "resultados": 4,
+        "custo_unitario": "R$ 91,74"
+      }
+    ],
+    "conjuntos": [
+      {
+        "nome": "16 - [INSTA][MIX MUSICA]",
+        "tipo_resultado": "Compras no site",
+        "compras": 1,
+        "investimento": "R$ 112,09",
+        "custo_por_resultado": "R$ 112,09"
+      },
+      {
+        "nome": "15 - [INSTA][MIX MUSICA]",
+        "tipo_resultado": "Compras no site",
+        "compras": 2,
+        "investimento": "R$ 111,51",
+        "custo_por_resultado": "R$ 55,76"
+      },
+      {
+        "nome": "13 - [INSTA][MIX MUSICA]",
+        "tipo_resultado": "",
+        "compras": 0,
+        "investimento": "R$ 72,64",
+        "custo_por_resultado": "—"
+      },
+      {
+        "nome": "00 - [INSTA][MIX MUSICA]",
+        "tipo_resultado": "Compras no site",
+        "compras": 1,
+        "investimento": "R$ 70,73",
+        "custo_por_resultado": "R$ 70,73"
+      }
+    ]
+  },
+  "comparativo": {
+    "semana_anterior": {
+      "label": "Semana anterior",
+      "investimento": "—",
+      "alcance": 0,
+      "impressoes": 0,
+      "frequencia": 0,
+      "adicoes_carrinho": 0,
+      "custo_carrinho": "—",
+      "compras": 0,
+      "custo_compra": "—",
+      "roas": 0
+    },
+    "semana_atual": {
+      "label": "15/03/2026 – 21/03/2026",
+      "investimento": "R$ 366,97",
+      "alcance": 13483,
+      "impressoes": 19884,
+      "frequencia": 1.47,
+      "adicoes_carrinho": 37,
+      "custo_carrinho": "R$ 9,92",
+      "compras": 4,
+      "custo_compra": "R$ 91,74",
+      "roas": 3.56
+    }
+  },
+  "analise": {
+    "positivos": [],
+    "atencao": [],
+    "estrategico": []
+  },
+  "proximos_passos": []
+}
