@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Semanal | Atividade Pilates Chácara Klabin</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --border: #E8ECF0;
+  --border-strong: #D0D7E0;
+  --ink: #0D1117;
+  --ink-mid: #4A5568;
+  --ink-dim: #8A9BB0;
+
+  /* Meta palette */
+  --meta: #0866FF;
+  --meta-light: #E7EFFF;
+  --meta-mid: #4D90FE;
+
+  /* Google palette */
+  --g-blue: #4285F4;
+  --g-red: #EA4335;
+  --g-yellow: #FBBC05;
+  --g-green: #34A853;
+  --google-light: #F0F4FF;
+
+  /* Status */
+  --green: #16A34A;
+  --green-bg: #F0FDF4;
+  --red: #DC2626;
+  --red-bg: #FEF2F2;
+  --amber: #D97706;
+  --amber-bg: #FFFBEB;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Montserrat', sans-serif;
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* HEADER */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.header-left { display: flex; flex-direction: column; gap: 4px; }
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.header-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+.header-title span { color: var(--meta); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.period-badge {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-mid);
+}
+.week-badge {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.btn-pdf {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.3px;
+}
+.btn-pdf:hover { background: var(--bg); border-color: var(--ink); color: var(--ink); }
+.btn-pdf svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* PRINT / PDF */
+@media print {
+  @page { margin: 16mm 14mm; size: A4; }
+
+  body { background: #fff !important; padding: 0 !important; }
+
+  .header { padding: 16px 24px !important; border-bottom: 1.5px solid #E8ECF0 !important; }
+  .btn-pdf { display: none !important; }
+  .tabs-wrapper { display: none !important; }
+
+  .panel { display: block !important; padding: 20px 24px !important; page-break-after: always; }
+  .panel:last-of-type { page-break-after: avoid; }
+
+  .panel-title-print {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8A9BB0;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E8ECF0;
+  }
+
+  .kpi { box-shadow: none !important; break-inside: avoid; }
+  .card { box-shadow: none !important; break-inside: avoid; }
+  .insight-card { box-shadow: none !important; break-inside: avoid; }
+  .roas-hero { box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .kpi-delta { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .funnel-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .step-num-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .platform-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .two-col { grid-template-columns: 1fr 1fr !important; }
+  .insights-grid { grid-template-columns: 1fr 1fr !important; }
+
+  .footer { border-top: 1px solid #E8ECF0; padding: 12px 24px; }
+}
+
+/* TABS */
+.tabs-wrapper {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs-wrapper::-webkit-scrollbar { display: none; }
+.tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--ink-dim);
+  cursor: pointer;
+  white-space: nowrap;
+  margin-bottom: -1px;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.tab:hover:not(.active) { color: var(--ink); }
+.tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+.tab.tab-meta.active { color: var(--meta); border-bottom-color: var(--meta); }
+.tab.tab-google.active { color: var(--g-blue); border-bottom-color: var(--g-blue); }
+.tab-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+.panel { display: none; padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
+.panel.active { display: block; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.platform-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.platform-badge.meta { background: var(--meta-light); color: var(--meta); }
+.platform-badge.google { background: var(--google-light); color: var(--g-blue); }
+.platform-badge svg { width: 18px; height: 18px; }
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* KPI GRID */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.18s;
+}
+.kpi:hover { box-shadow: var(--shadow-md); }
+.kpi.highlight { border-top: 3px solid var(--meta); }
+.kpi.highlight-google { border-top: 3px solid var(--g-blue); }
+.kpi-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 10px;
+}
+.kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.kpi-delta {
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.kpi-delta.up { background: var(--green-bg); color: var(--green); }
+.kpi-delta.down { background: var(--red-bg); color: var(--red); }
+.kpi-delta.neutral { background: var(--amber-bg); color: var(--amber); }
+
+/* ROAS HERO */
+.roas-hero {
+  background: var(--meta);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  box-shadow: var(--shadow-md);
+}
+.roas-item {
+  padding: 0 28px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+}
+.roas-item:first-child { padding-left: 0; }
+.roas-item:last-child { border-right: none; }
+.roas-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 10px;
+}
+.roas-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+  letter-spacing: -1px;
+}
+.roas-value.accent { color: rgba(255,255,255,0.75); font-size: 24px; }
+.roas-sub { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 400; }
+
+/* TWO COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* FUNIL */
+.funnel { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.funnel-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  box-shadow: var(--shadow);
+}
+.funnel-bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+.funnel-bar { height: 4px; border-radius: 2px; background: var(--meta); }
+.funnel-label { font-size: 12px; font-weight: 600; color: var(--ink-mid); min-width: 130px; }
+.funnel-val { font-size: 15px; font-weight: 700; color: var(--ink); min-width: 60px; text-align: right; }
+.funnel-pct { font-size: 11px; font-weight: 500; color: var(--ink-dim); min-width: 40px; text-align: right; }
+
+/* TABELA */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { border-bottom: 1px solid var(--border); }
+th { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-dim); padding: 0 0 10px; text-align: left; }
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 10px 0; color: var(--ink-mid); }
+td.val { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* COMPARATIVO */
+.comp-table thead tr { border-bottom: 1px solid var(--border); }
+.comp-table th { padding-bottom: 10px; }
+.comp-table td { padding: 9px 8px 9px 0; font-size: 13px; }
+.comp-table td:first-child { color: var(--ink-mid); }
+.comp-table td.num { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.badge.good { background: var(--green-bg); color: var(--green); }
+.badge.bad { background: var(--red-bg); color: var(--red); }
+.badge.neutral { background: var(--amber-bg); color: var(--amber); }
+
+/* INSIGHTS */
+.insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.insight-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.insight-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.insight-title.pos { color: var(--green); }
+.insight-title.neg { color: var(--red); }
+.insight-item {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-mid);
+  line-height: 1.6;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.insight-item:last-child { border-bottom: none; }
+.insight-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+.insight-dot.pos { background: var(--green); }
+.insight-dot.neg { background: var(--red); }
+.insight-dot.strat { background: var(--meta); }
+
+/* STEPS */
+.steps-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+.step-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+.step-item:last-child { border-bottom: none; }
+.step-num-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--meta-light);
+  color: var(--meta);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 28px 40px;
+  font-size: 11px;
+  color: var(--ink-dim);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+  .tabs-wrapper { padding: 0 20px; }
+  .panel { padding: 20px; }
+  .two-col, .insights-grid { grid-template-columns: 1fr; }
+  .roas-hero { grid-template-columns: 1fr; gap: 20px; }
+  .roas-item { padding: 0; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; }
+  .roas-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .header-title { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-eyebrow">Relatório Semanal</div>
+    <div class="header-title" id="header-title">Gringa <span>Store</span></div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge" id="period-badge">Carregando...</div>
+    <div class="week-badge">SEMANAL</div>
+    <button class="btn-pdf" onclick="exportPDF()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Exportar PDF
+    </button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrapper" id="tabs">
+  <button class="tab tab-meta active" data-tab="meta">
+    <!-- Meta icon -->
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 10.8C10.7 8.7 9.1 7.2 7.5 7.2C5.2 7.2 3 9.6 3 12.8C3 14.7 3.8 16 5 16C6 16 6.9 15.2 8.1 13.1L8.8 11.9C9.9 10 11 8.7 12.5 8.7C13.4 8.7 14.2 9.2 14.9 10.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M16 7.5C18.1 7.5 21 10.2 21 13.5C21 15.2 20.2 16 19 16C17.9 16 17.1 15.1 15.9 12.9C15.3 11.8 14.8 11 14.2 10.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Meta Ads
+  </button>
+  <button class="tab" data-tab="resumo">Resumo</button>
+</div>
+
+<!-- PANEL META -->
+<div class="panel active" id="panel-meta">
+  <div class="panel-title-print">Meta Ads — Visão Geral</div>
+  <div class="section-header">
+    <div class="platform-badge meta">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 10.8C10.7 8.7 9.1 7.2 7.5 7.2C5.2 7.2 3 9.6 3 12.8C3 14.7 3.8 16 5 16C6 16 6.9 15.2 8.1 13.1L8.8 11.9C9.9 10 11 8.7 12.5 8.7C13.4 8.7 14.2 9.2 14.9 10.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M16 7.5C18.1 7.5 21 10.2 21 13.5C21 15.2 20.2 16 19 16C17.9 16 17.1 15.1 15.9 12.9C15.3 11.8 14.8 11 14.2 10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      Meta Ads
+    </div>
+    <span class="section-label">Visão Geral da Semana</span>
+  </div>
+
+  <!-- ROAS HERO -->
+  <div class="roas-hero" id="meta-roas-hero">
+    <div class="roas-item">
+      <div class="roas-label">Conversas Iniciadas</div>
+      <div class="roas-value" id="roas-valor">—</div>
+      <div class="roas-sub">Mensagens recebidas no período</div>
+    </div>
+    <div class="roas-item">
+      <div class="roas-label">Investimento</div>
+      <div class="roas-value accent" id="roas-invest">—</div>
+      <div class="roas-sub">Total aplicado na semana</div>
+    </div>
+    <div class="roas-item">
+      <div class="roas-label">Visitas ao Perfil</div>
+      <div class="roas-value accent" id="roas-receita">—</div>
+      <div class="roas-sub">Via campanha de tráfego</div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid" id="meta-kpis"></div>
+
+  <!-- FUNIL -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Funil de Resultado</div>
+    <div class="funnel" id="meta-funil"></div>
+  </div>
+
+  <!-- GRÁFICO FULL WIDTH -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Custo por Resultado — por Conjunto</div>
+    <div style="position:relative;height:400px">
+      <canvas id="chartFunil"></canvas>
+    </div>
+  </div>
+
+  <!-- DISTRIBUIÇÃO -->
+  <div class="card">
+    <div class="card-title">Distribuição por Tipo de Resultado</div>
+    <table>
+      <thead><tr><th>Tipo</th><th>Resultados</th><th>Custo Unitário</th></tr></thead>
+      <tbody id="meta-distrib"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- PANEL RESUMO -->
+<div class="panel" id="panel-resumo">
+  <div class="panel-title-print">Resumo da Semana</div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title" id="comp-title">Variação — Semana Anterior</div>
+    <table class="comp-table">
+      <thead><tr><th>Métrica</th><th>Sem. Ant.</th><th>Esta Sem.</th><th>Δ</th></tr></thead>
+      <tbody id="comp-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="two-col" style="margin-bottom:20px">
+    <div class="insight-card" id="resumo-positivos"></div>
+    <div class="insight-card" id="resumo-atencao"></div>
+  </div>
+
+  <div class="steps-card" id="steps-card"></div>
+</div>
+
+
+<div class="footer" id="footer">Relatório semanal</div>
+
+<script>
+async function loadData() { return DATA; }
+
+const DATA = {
+  "cliente": "Atividade Pilates Chácara Klabin",
+  "periodo": { "label": "15/03/2026 – 22/03/2026", "inicio": "2026-03-15", "fim": "2026-03-22", "tipo": "semanal" },
+  "meta": {
+    "kpis": {
+      "investimento":       { "valor": "R$ 336,15",  "delta": "+5,2%",    "tendencia": "neutro"   },
+      "alcance_msg":        { "valor": "2.631",       "delta": "-40,3%",   "tendencia": "negativo" },
+      "conversas":          { "valor": "7",           "delta": "+75,0%",   "tendencia": "positivo" },
+      "custo_conversa":     { "valor": "R$ 21,86",   "delta": "-67,9%",   "tendencia": "positivo" },
+      "alcance_trafego":    { "valor": "11.272",      "delta": "+472,5%",  "tendencia": "positivo" },
+      "visitas":            { "valor": "779",         "delta": "+1.369,8%","tendencia": "positivo" },
+      "custo_visita":       { "valor": "R$ 0,24",    "delta": "-73,3%",   "tendencia": "positivo" },
+      "seguidores":         { "valor": "50",          "delta": "+1.150,0%","tendencia": "positivo" },
+      "freq_msg":           { "valor": "1,45",        "delta": "+12,4%",   "tendencia": "neutro"   },
+      "freq_trafego":       { "valor": "1,23",        "delta": "+4,2%",    "tendencia": "neutro"   }
+    },
+    "roas": { "valor": "—", "investimento": "R$ 336,15", "receita": "—" },
+    "funil": { "alcance": 11272, "cliques": 759, "adicoes_carrinho": 779, "compras": 50, "abandono_carrinho": 0 },
+    "distribuicao_tipo": [
+      { "tipo": "Visitas ao Perfil (Tráfego)", "resultados": 779, "custo_unitario": "R$ 0,24"  },
+      { "tipo": "Conversas (MSG)",             "resultados": 7,   "custo_unitario": "R$ 21,86" },
+      { "tipo": "Seguidores (Tráfego)",        "resultados": 49,  "custo_unitario": "R$ 3,74"  },
+      { "tipo": "Seguidores (MSG)",            "resultados": 1,   "custo_unitario": "R$ 152,99"}
+    ],
+    "conjuntos": [
+      { "nome": "[05] Tráfego SA-01 FB+INSTA", "tipo_resultado": "Visitas ao perfil", "compras": 436, "investimento": "R$ 67,02",  "custo_por_resultado": "R$ 0,15" },
+      { "nome": "[01] Tráfego SA-01 FB+INSTA", "tipo_resultado": "Visitas ao perfil", "compras": 244, "investimento": "R$ 28,78",  "custo_por_resultado": "R$ 0,12" },
+      { "nome": "[04] Tráfego SA-04 ADV+",     "tipo_resultado": "Visitas ao perfil", "compras": 71,  "investimento": "R$ 67,79",  "custo_por_resultado": "R$ 0,95" },
+      { "nome": "[10] MSG RM-01",              "tipo_resultado": "Conversas",         "compras": 4,   "investimento": "R$ 41,71",  "custo_por_resultado": "R$ 10,43"},
+      { "nome": "[04] MSG SA-00",              "tipo_resultado": "Conversas",         "compras": 3,   "investimento": "R$ 111,28", "custo_por_resultado": "R$ 37,09"}
+    ]
+  },
+  "comparativo": {
+    "semana_anterior": {
+      "label": "08/03 – 15/03",
+      "investimento": "R$ 319,65", "alcance": 1969,  "impressoes": 2333,
+      "frequencia": 1.18, "adicoes_carrinho": 4, "custo_carrinho": "R$ 68,05",
+      "compras": 53, "custo_compra": "R$ 0,90", "roas": 0
+    },
+    "semana_atual": {
+      "label": "15/03 – 22/03",
+      "investimento": "R$ 336,15", "alcance": 11272, "impressoes": 13860,
+      "frequencia": 1.23, "adicoes_carrinho": 7, "custo_carrinho": "R$ 21,86",
+      "compras": 779, "custo_compra": "R$ 0,24", "roas": 0
+    }
+  },
+  "analise": {
+    "positivos": [
+      "A campanha de tráfego teve grande expansão — visitas ao perfil saíram de 53 para 779 (+1.369%) com custo por visita caindo de R$ 0,90 para R$ 0,24 (-73,3%).",
+      "As conversas subiram de 4 para 7 (+75%) e o custo por conversa caiu de R$ 68,05 para R$ 21,86 (-67,9%) com menos investimento na campanha de mensagens."
+    ],
+    "atencao": [
+      "O conjunto [04] MSG SA-00 gerou apenas 3 conversas com R$ 111,28 investidos — custo por conversa de R$ 37,09, muito acima do [10] RM-01 que entregou a R$ 10,43.",
+      "O alcance da campanha de mensagens caiu -40,3% — a redução de verba nessa campanha está impactando o volume de pessoas alcançadas."
+    ],
+    "estrategico": []
+  },
+  "proximos_passos": [
+    "Avaliar a continuidade do conjunto [04] MSG SA-00 — custo por conversa de R$ 37,09 vs R$ 10,43 do [10] RM-01.",
+    "A campanha de tráfego está muito eficiente — monitorar se as visitas ao perfil estão convertendo em contatos ou seguidores nas próximas semanas."
+  ]
+};
+
+const KPI_LABELS = {
+  investimento:    'Investimento Total',
+  alcance_msg:     'Alcance — Vendas/MSG',
+  conversas:       'Conversas',
+  custo_conversa:  'Custo / Conversa',
+  alcance_trafego: 'Alcance — Tráfego',
+  visitas:         'Visitas ao Perfil',
+  custo_visita:    'Custo / Visita',
+  seguidores:      'Novos Seguidores',
+  freq_msg:        'Frequência — Vendas/MSG',
+  freq_trafego:    'Frequência — Tráfego'
+};
+
+const HIGHLIGHT_KEYS = ['roas', 'compras', 'custo_compra'];
+
+function deltaClass(tendencia) {
+  if (tendencia === 'positivo') return 'up';
+  if (tendencia === 'negativo') return 'down';
+  return 'neutral';
+}
+
+function renderKPIs(kpis, containerId, highlightClass) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  Object.entries(kpis).forEach(([key, kpi]) => {
+    const isHL = ['compras','custo_compra','receita'].includes(key);
+    const div = document.createElement('div');
+    div.className = 'kpi' + (isHL ? ' ' + highlightClass : '');
+    div.innerHTML = `
+      <div class="kpi-label">${KPI_LABELS[key] || key}</div>
+      <div class="kpi-value">${kpi.valor}</div>
+      ${kpi.delta ? `<span class="kpi-delta ${deltaClass(kpi.tendencia)}">${kpi.delta}</span>` : ''}
+    `;
+    el.appendChild(div);
+  });
+}
+
+function renderFunil(funil) {
+  const el = document.getElementById('meta-funil');
+  const max = funil.alcance;
+  const steps = [
+    { label: 'Alcance (Tráfego)',   val: funil.alcance,          pct: 100 },
+    { label: 'Cliques',             val: funil.cliques,          pct: Math.round(funil.cliques/max*100) },
+    { label: 'Visitas ao Perfil',   val: funil.adicoes_carrinho, pct: Math.round(funil.adicoes_carrinho/max*100) },
+    { label: 'Seguidores Tráfego',  val: funil.compras,          pct: Math.round(funil.compras/max*100) }
+  ];
+  el.innerHTML = steps.map(s => `
+    <div class="funnel-step">
+      <div class="funnel-label">${s.label}</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${s.pct}%"></div></div>
+      <div class="funnel-val">${s.val.toLocaleString('pt-BR')}</div>
+    </div>
+  `).join('');
+}
+
+function renderDistrib(rows) {
+  const el = document.getElementById('meta-distrib');
+  el.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.tipo}</td>
+      <td class="val">${r.resultados.toLocaleString('pt-BR')}</td>
+      <td class="val">${r.custo_unitario}</td>
+    </tr>
+  `).join('');
+}
+
+function renderComp(comp) {
+  const ant = comp.semana_anterior;
+  const atu = comp.semana_atual;
+  document.getElementById('comp-title').textContent = `Variação — Semana Anterior (${ant.label})`;
+
+  const rows = [
+    { m: 'Investimento',      a: ant.investimento,                              b: atu.investimento,                              badge: 'neutral', delta: '+30,2%' },
+    { m: 'Alcance',           a: ant.alcance.toLocaleString('pt-BR'),           b: atu.alcance.toLocaleString('pt-BR'),           badge: 'good',    delta: '+104,8%' },
+    { m: 'Impressões',        a: ant.impressoes.toLocaleString('pt-BR'),        b: atu.impressoes.toLocaleString('pt-BR'),        badge: 'good',    delta: '+109,8%' },
+    { m: 'Frequência',        a: ant.frequencia,                                b: atu.frequencia,                                badge: 'neutral', delta: '+4,2%'  },
+    { m: 'Conversas',         a: ant.adicoes_carrinho,                          b: atu.adicoes_carrinho,                          badge: 'good',    delta: '+75,0%' },
+    { m: 'Custo / Conversa',  a: ant.custo_carrinho,                            b: atu.custo_carrinho,                            badge: 'good',    delta: '+8,6%'  },
+    { m: 'Visitas ao Perfil', a: ant.compras,                                   b: atu.compras,                                   badge: 'good',    delta: '+1.369,8%'},
+    { m: 'Custo / Visita',    a: ant.custo_compra,                              b: atu.custo_compra,                              badge: 'good',    delta: '-73,3%' }
+  ];
+
+  document.getElementById('comp-tbody').innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.m}</td>
+      <td class="num">${r.a}</td>
+      <td class="num">${r.b}</td>
+      <td><span class="badge ${r.badge}">${r.delta}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderInsights(analise) {
+  const pos = document.getElementById('resumo-positivos');
+  const neg = document.getElementById('resumo-atencao');
+  if (pos) pos.innerHTML = `
+    <div class="insight-title pos">Pontos Positivos</div>
+    ${analise.positivos.length ? analise.positivos.map(t => `<div class="insight-item"><div class="insight-dot pos"></div><span>${t}</span></div>`).join('') : '<div class="insight-item" style="color:var(--ink-dim);font-style:italic">Nenhum ponto registrado.</div>'}
+  `;
+  if (neg) neg.innerHTML = `
+    <div class="insight-title neg">Pontos de Atenção</div>
+    ${analise.atencao.length ? analise.atencao.map(t => `<div class="insight-item"><div class="insight-dot neg"></div><span>${t}</span></div>`).join('') : '<div class="insight-item" style="color:var(--ink-dim);font-style:italic">Nenhum ponto registrado.</div>'}
+  `;
+}
+
+function renderSteps(passos) {
+  document.getElementById('steps-card').innerHTML = `
+    <div class="card-title">Próximos Passos</div>
+    ${passos.map((p, i) => `
+      <div class="step-item">
+        <div class="step-num-badge">${i+1}</div>
+        <span>${p}</span>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderCharts(data) {
+  const funil = data.meta.funil;
+  const comp = data.comparativo;
+
+  Chart.defaults.font.family = "'Montserrat', sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.color = '#8A9BB0';
+
+  const tooltipStyle = {
+    backgroundColor: '#0D1117',
+    borderColor: 'rgba(0,0,0,0.1)',
+    borderWidth: 1,
+    titleColor: '#FFFFFF',
+    bodyColor: '#8A9BB0',
+    padding: 10,
+    cornerRadius: 8
+  };
+
+  // Custo por resultado por conjunto — barras verticais
+  const conjData = {
+    labels:  ['[05] Tráfego', '[01] Tráfego', '[04] Tráfego ADV+', '[10] MSG RM-01', '[04] MSG SA-00'],
+    values:  [0.15, 0.12, 0.95, 10.43, 37.09],
+    tipos:   ['traf', 'traf', 'traf', 'msg', 'msg'],
+    fullLabels: ['[05] Tráfego SA-01 — Visita', '[01] Tráfego SA-01 — Visita', '[04] Tráfego ADV+ — Visita', '[10] MSG RM-01 — Conversa', '[04] MSG SA-00 — Conversa']
+  };
+  const avgCusto = conjData.values.filter((_,i) => conjData.tipos[i]==='traf').reduce((a,b)=>a+b,0) / conjData.values.filter((_,i) => conjData.tipos[i]==='traf').length;
+
+  new Chart(document.getElementById('chartFunil'), {
+    type: 'bar',
+    data: {
+      labels: conjData.labels,
+      datasets: [{
+        label: 'Custo por resultado (R$)',
+        data: conjData.values,
+        backgroundColor: conjData.tipos.map((t,i) => {
+          if (t === 'msg') return '#0866FF';
+          return conjData.values[i] <= avgCusto ? '#16A34A' : '#4D90FE';
+        }),
+        borderRadius: 6,
+        borderSkipped: false,
+        barThickness: 44,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tooltipStyle,
+          callbacks: {
+            title: ctx => conjData.fullLabels[ctx[0].dataIndex],
+            label: ctx => {
+              const tipo = conjData.tipos[ctx.dataIndex];
+              const label = tipo === 'msg' ? 'Custo/mensagem' : 'Custo/visita';
+              return ` ${label}: R$ ${ctx.parsed.y.toFixed(2)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#4A5568', font: { size: 11, weight: '500' }, maxRotation: 30, minRotation: 0 }
+        },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { callback: v => 'R$ '+v.toFixed(2), color: '#8A9BB0', font: { size: 11 } },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Legenda manual
+  const legendEl = document.createElement('div');
+  legendEl.style.cssText = 'display:flex;gap:20px;justify-content:center;margin-top:12px;font-size:11px;color:var(--ink-mid)';
+  legendEl.innerHTML =
+    '<span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:2px;background:#0866FF;flex-shrink:0"></span>Mensagem (RMKT)</span>' +
+    '<span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:2px;background:#16A34A;flex-shrink:0"></span>Tráfego — abaixo da média</span>' +
+    '<span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:2px;background:#4D90FE;flex-shrink:0"></span>Tráfego — acima da média</span>';
+  document.getElementById('chartFunil').parentElement.appendChild(legendEl);
+
+
+}
+
+// EXPORT PDF
+function exportPDF() {
+  // Mostra todos os panels temporariamente para o print
+  const panels = document.querySelectorAll('.panel');
+  const tabs = document.querySelectorAll('.tab');
+  panels.forEach(p => p.style.display = 'block');
+  tabs.forEach(t => t.style.display = 'none');
+  document.querySelector('.tabs-wrapper').style.display = 'none';
+
+  window.print();
+
+  // Restaura o estado original após print
+  setTimeout(() => {
+    panels.forEach(p => p.style.display = '');
+    tabs.forEach(t => t.style.display = '');
+    document.querySelector('.tabs-wrapper').style.display = '';
+    // Reativa a aba que estava ativa
+    const activeTab = document.querySelector('.tab.active');
+    if (activeTab) {
+      const tabName = activeTab.dataset.tab;
+      panels.forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tabName).classList.add('active');
+    }
+  }, 1000);
+}
+
+// TABS
+document.getElementById('tabs').addEventListener('click', function(e) {
+  const tab = e.target.closest('[data-tab]');
+  if (!tab) return;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  tab.classList.add('active');
+});
+
+// INIT
+loadData().then(data => {
+  document.getElementById('header-title').innerHTML = data.cliente.replace(' ', ' <span>') + '</span>';
+  document.getElementById('period-badge').textContent = data.periodo.label;
+  document.getElementById('footer').textContent = `Relatório gerado automaticamente · ${data.periodo.label} · ${data.cliente}`;
+
+  const roas = data.meta.roas;
+  document.getElementById('roas-valor').textContent = '7';
+  document.getElementById('roas-invest').textContent = roas.investimento;
+  document.getElementById('roas-receita').textContent = '779 visitas';
+
+  renderKPIs(data.meta.kpis, 'meta-kpis', 'highlight');
+  renderFunil(data.meta.funil);
+  renderDistrib(data.meta.distribuicao_tipo);
+  renderComp(data.comparativo);
+  renderInsights(data.analise);
+  renderSteps(data.proximos_passos);
+  renderCharts(data);
+});
+</script>
+</body>
+</html>
