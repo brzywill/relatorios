@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Semanal | Atividade Pilates Chácara Klabin</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --border: #E8ECF0;
+  --border-strong: #D0D7E0;
+  --ink: #0D1117;
+  --ink-mid: #4A5568;
+  --ink-dim: #8A9BB0;
+  --meta: #0866FF;
+  --meta-light: #E7EFFF;
+  --meta-mid: #4D90FE;
+  --green: #16A34A;
+  --green-bg: #F0FDF4;
+  --red: #DC2626;
+  --red-bg: #FEF2F2;
+  --amber: #D97706;
+  --amber-bg: #FFFBEB;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.header,
+.tabs-wrapper {
+  background: var(--surface);
+}
+
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.header-left { display: flex; flex-direction: column; gap: 4px; }
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.header-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+
+.header-title span { color: var(--meta); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+
+.period-badge,
+.week-badge,
+.btn-pdf {
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.period-badge {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 7px 14px;
+  color: var(--ink-mid);
+}
+
+.week-badge {
+  background: var(--ink);
+  color: #fff;
+  padding: 7px 14px;
+}
+
+.btn-pdf {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  padding: 8px 16px;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.btn-pdf:hover { background: var(--bg); border-color: var(--ink); color: var(--ink); }
+.btn-pdf svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.tabs-wrapper {
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  overflow-x: auto;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-dim);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s;
+}
+
+.tab.active {
+  color: var(--meta);
+  border-bottom-color: var(--meta);
+}
+
+.panel {
+  display: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 40px;
+}
+
+.panel.active { display: block; }
+
+.panel-title-print {
+  display: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.platform-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--meta-light);
+  color: var(--meta);
+}
+
+.platform-badge svg { width: 18px; height: 18px; }
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.hero {
+  background: var(--meta);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  box-shadow: var(--shadow-md);
+}
+
+.hero-item {
+  padding: 0 24px;
+  border-right: 1px solid rgba(255,255,255,0.16);
+}
+
+.hero-item:first-child { padding-left: 0; }
+.hero-item:last-child { padding-right: 0; border-right: none; }
+
+.hero-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 10px;
+}
+
+.hero-value {
+  font-size: 31px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.hero-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.5;
+}
+
+.kpi-grid,
+.insights-grid,
+.funnel-grid,
+.two-col {
+  display: grid;
+  gap: 16px;
+}
+
+.kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 24px;
+}
+
+.funnel-grid,
+.insights-grid,
+.two-col {
+  grid-template-columns: 1fr 1fr;
+}
+
+.card,
+.kpi,
+.insight-card,
+.steps-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.card,
+.insight-card,
+.steps-card { padding: 24px; }
+
+.kpi { padding: 20px; }
+
+.card-title,
+.insight-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.insight-title.pos { color: var(--green); }
+.insight-title.neg { color: var(--red); }
+
+.kpi-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 10px;
+}
+
+.kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.kpi-delta,
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.kpi-delta.up,
+.badge.good { background: var(--green-bg); color: var(--green); }
+.kpi-delta.down,
+.badge.bad { background: var(--red-bg); color: var(--red); }
+.kpi-delta.neutral,
+.badge.neutral { background: var(--amber-bg); color: var(--amber); }
+
+.funnel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.funnel-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  background: var(--surface);
+}
+
+.funnel-label {
+  min-width: 120px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-mid);
+}
+
+.funnel-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.funnel-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--meta);
+}
+
+.funnel-val {
+  min-width: 60px;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { border-bottom: 1px solid var(--border); }
+th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0 0 10px;
+}
+
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 10px 0; color: var(--ink-mid); vertical-align: top; }
+td.val,
+td.num { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.chart-wrap {
+  height: 320px;
+}
+
+.note {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--ink-dim);
+  line-height: 1.5;
+}
+
+.insight-item,
+.step-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+
+.insight-item:last-child,
+.step-item:last-child { border-bottom: none; }
+
+.insight-dot {
+  width: 5px;
+  height: 5px;
+  margin-top: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.insight-dot.pos { background: var(--green); }
+.insight-dot.neg { background: var(--red); }
+
+.step-num-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--meta-light);
+  color: var(--meta);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.footer {
+  text-align: center;
+  padding: 28px 40px;
+  font-size: 11px;
+  color: var(--ink-dim);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+@media (max-width: 720px) {
+  .header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+  .header-right { flex-wrap: wrap; }
+  .tabs-wrapper { padding: 0 20px; }
+  .panel { padding: 20px; }
+  .hero,
+  .funnel-grid,
+  .insights-grid,
+  .two-col { grid-template-columns: 1fr; }
+  .hero-item {
+    padding: 0 0 16px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.16);
+  }
+  .hero-item:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}
+
+@media print {
+  @page { margin: 16mm 14mm; size: A4; }
+  body { background: #fff !important; }
+  .btn-pdf, .tabs-wrapper { display: none !important; }
+  .header { padding: 16px 24px !important; border-bottom: 1px solid var(--border) !important; }
+  .panel { display: block !important; padding: 20px 24px !important; page-break-after: always; }
+  .panel:last-of-type { page-break-after: avoid; }
+  .panel-title-print { display: block; }
+  .hero, .kpi, .card, .insight-card, .steps-card, .badge, .kpi-delta { box-shadow: none !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="header-eyebrow">Relatório Semanal</div>
+    <div class="header-title" id="header-title">Atividade Pilates <span>Chácara Klabin</span></div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge" id="period-badge">22/03/2026 – 29/03/2026</div>
+    <div class="week-badge">SEMANAL</div>
+    <button class="btn-pdf" onclick="exportPDF()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Exportar PDF
+    </button>
+  </div>
+</div>
+
+<div class="tabs-wrapper" id="tabs">
+  <button class="tab active" data-tab="meta">Meta Ads</button>
+  <button class="tab" data-tab="resumo">Resumo</button>
+</div>
+
+<div class="panel active" id="panel-meta">
+  <div class="panel-title-print">Meta Ads — Visão Geral</div>
+  <div class="section-header">
+    <div class="platform-badge">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 10.8C10.7 8.7 9.1 7.2 7.5 7.2C5.2 7.2 3 9.6 3 12.8C3 14.7 3.8 16 5 16C6 16 6.9 15.2 8.1 13.1L8.8 11.9C9.9 10 11 8.7 12.5 8.7C13.4 8.7 14.2 9.2 14.9 10.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M16 7.5C18.1 7.5 21 10.2 21 13.5C21 15.2 20.2 16 19 16C17.9 16 17.1 15.1 15.9 12.9C15.3 11.8 14.8 11 14.2 10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      Meta Ads
+    </div>
+    <span class="section-label">Conta Mista: Tráfego + Mensagens</span>
+  </div>
+
+  <div class="hero" id="meta-hero"></div>
+  <div class="kpi-grid" id="meta-kpis"></div>
+
+  <div class="funnel-grid" style="margin-bottom: 20px;">
+    <div class="card">
+      <div class="card-title">Funil — Mensagens</div>
+      <div class="funnel-stack" id="funnel-msg"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Funil — Tráfego</div>
+      <div class="funnel-stack" id="funnel-traf"></div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-bottom: 20px;">
+    <div class="card">
+      <div class="card-title">Custo por Resultado por Conjunto</div>
+      <div class="chart-wrap"><canvas id="cost-chart"></canvas></div>
+      <div class="note">Azul escuro = mensagens. Verde = tráfego abaixo da média de custo. Azul claro = tráfego acima da média de custo.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribuição por Tipo de Resultado</div>
+      <table>
+        <thead><tr><th>Tipo</th><th>Quantidade</th><th>Custo Unitário</th></tr></thead>
+        <tbody id="meta-distrib"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" id="comp-title">Variação — Semana Anterior</div>
+    <table>
+      <thead><tr><th>Métrica</th><th>Sem. Ant.</th><th>Esta Sem.</th><th>Δ</th></tr></thead>
+      <tbody id="comp-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel" id="panel-resumo">
+  <div class="panel-title-print">Resumo da Semana</div>
+  <div class="insights-grid" style="margin-bottom: 20px;">
+    <div class="insight-card" id="resumo-positivos"></div>
+    <div class="insight-card" id="resumo-atencao"></div>
+  </div>
+  <div class="steps-card" id="steps-card"></div>
+</div>
+
+<div class="footer" id="footer"></div>
+
+<script>
+const DATA = {
+  cliente: 'Atividade Pilates Chácara Klabin',
+  periodo: {
+    label: '22/03/2026 – 29/03/2026',
+    inicio: '2026-03-22',
+    fim: '2026-03-29',
+    tipo: 'semanal'
+  },
+  meta: {
+    hero: [
+      { label: 'Conversas — MSG', valor: '6', sub: 'Somente campanhas de mensagens na semana atual' },
+      { label: 'Investimento Total', valor: 'R$ 279,90', sub: 'MSG: R$ 96,79 · Tráfego: R$ 183,11' },
+      { label: 'Visitas ao Perfil — Tráfego', valor: '981', sub: 'Somente campanhas de tráfego na semana atual' }
+    ],
+    kpis: [
+      { label: 'Investimento — MSG', valor: 'R$ 96,79', delta: '-36,7%', tendencia: 'negativo' },
+      { label: 'Conversas — MSG', valor: '6', delta: '-14,3%', tendencia: 'negativo' },
+      { label: 'Custo / Conversa — MSG', valor: 'R$ 16,13', delta: '-26,2%', tendencia: 'positivo' },
+      { label: 'Alcance — MSG', valor: '1.912', delta: '-27,3%', tendencia: 'negativo' },
+      { label: 'Cliques — MSG', valor: '22', delta: '0,0%', tendencia: 'neutro' },
+      { label: 'Seguidores — MSG', valor: '0', delta: '-100,0%', tendencia: 'negativo' },
+      { label: 'Custo / Seguidor — MSG', valor: '—', delta: null, tendencia: 'neutro' },
+      { label: 'Investimento — Tráfego', valor: 'R$ 183,11', delta: '0,0%', tendencia: 'neutro' },
+      { label: 'Visitas ao Perfil — Tráfego', valor: '981', delta: '+25,9%', tendencia: 'positivo' },
+      { label: 'Custo / Visita — Tráfego', valor: 'R$ 0,19', delta: '-20,8%', tendencia: 'positivo' },
+      { label: 'Cliques — Tráfego', valor: '958', delta: '+26,2%', tendencia: 'positivo' },
+      { label: 'Seguidores — Tráfego', valor: '91', delta: '+85,7%', tendencia: 'positivo' },
+      { label: 'Custo / Seguidor — Tráfego', valor: 'R$ 2,01', delta: '-46,3%', tendencia: 'positivo' },
+      { label: 'Frequência — Tráfego', valor: '1,23', delta: '0,0%', tendencia: 'neutro' }
+    ],
+    funnel_msg: [
+      { label: 'Alcance', valor: 1912 },
+      { label: 'Cliques', valor: 22 },
+      { label: 'Conversas', valor: 6 },
+      { label: 'Seguidores', valor: 0 }
+    ],
+    funnel_traf: [
+      { label: 'Alcance', valor: 12347 },
+      { label: 'Cliques', valor: 958 },
+      { label: 'Visitas ao Perfil', valor: 981 },
+      { label: 'Seguidores', valor: 91 }
+    ],
+    distribuicao_tipo: [
+      { tipo: 'Conversas — MSG', resultados: 6, custo_unitario: 'R$ 16,13' },
+      { tipo: 'Seguidores — MSG', resultados: 0, custo_unitario: '—' },
+      { tipo: 'Visitas ao Perfil — Tráfego', resultados: 981, custo_unitario: 'R$ 0,19' },
+      { tipo: 'Seguidores — Tráfego', resultados: 91, custo_unitario: 'R$ 2,01' }
+    ],
+    chart: {
+      labels: [
+        '[05][SA-01][FB+INSTA][ADV+]',
+        '[04][SA-04][FB+INSTA][ADV+]',
+        '[03][WHATSAPP][RM-2][AUTO]',
+        '[10][RM-01][FB+INSTA]'
+      ],
+      shortLabels: ['SA-01', 'SA-04', 'RM-2', 'RM-01'],
+      values: [0.17, 0.97, 18.5, 13.77],
+      colors: ['#16A34A', '#4D90FE', '#0866FF', '#0866FF']
+    }
+  },
+  comparativo: {
+    semana_anterior: { label: '15/03 – 22/03' },
+    semana_atual: { label: '22/03 – 29/03' },
+    rows: [
+      { metrica: 'Investimento — MSG', anterior: 'R$ 152,99', atual: 'R$ 96,79', delta: '-36,7%', badge: 'bad' },
+      { metrica: 'Conversas — MSG', anterior: '7', atual: '6', delta: '-14,3%', badge: 'bad' },
+      { metrica: 'Custo / Conversa — MSG', anterior: 'R$ 21,86', atual: 'R$ 16,13', delta: '-26,2%', badge: 'good' },
+      { metrica: 'Seguidores — MSG', anterior: '1', atual: '0', delta: '-100,0%', badge: 'bad' },
+      { metrica: 'Custo / Seguidor — MSG', anterior: 'R$ 152,99', atual: '—', delta: '—', badge: 'neutral' },
+      { metrica: 'Investimento — Tráfego', anterior: 'R$ 183,16', atual: 'R$ 183,11', delta: '0,0%', badge: 'neutral' },
+      { metrica: 'Visitas ao Perfil — Tráfego', anterior: '779', atual: '981', delta: '+25,9%', badge: 'good' },
+      { metrica: 'Custo / Visita — Tráfego', anterior: 'R$ 0,24', atual: 'R$ 0,19', delta: '-20,8%', badge: 'good' },
+      { metrica: 'Cliques — Tráfego', anterior: '759', atual: '958', delta: '+26,2%', badge: 'good' },
+      { metrica: 'Seguidores — Tráfego', anterior: '49', atual: '91', delta: '+85,7%', badge: 'good' },
+      { metrica: 'Custo / Seguidor — Tráfego', anterior: 'R$ 3,74', atual: 'R$ 2,01', delta: '-46,3%', badge: 'good' }
+    ]
+  },
+  analise: {
+    positivos: [
+      'As visitas ao perfil das campanhas de tráfego subiram de 779 para 981 (+25,9%) com investimento praticamente estável: R$ 183,16 para R$ 183,11 (0,0%).',
+      'O custo por conversa das campanhas de mensagens caiu de R$ 21,86 para R$ 16,13 (-26,2%), mesmo com redução moderada no volume de conversas: 7 para 6 (-14,3%).'
+    ],
+    atencao: [
+      'O alcance das campanhas de mensagens caiu de 2.631 para 1.912 (-27,3%), e as conversas foram de 7 para 6 (-14,3%).',
+      'Os seguidores vindos das campanhas de mensagens foram de 1 para 0 (-100,0%), enquanto o crescimento de seguidores ficou concentrado nas campanhas de tráfego.'
+    ]
+  },
+  proximos_passos: [
+    'Manter o conjunto de tráfego SA-01 como principal alavanca, já que ele entregou 960 visitas ao perfil com custo de R$ 0,17.',
+    'Testar nova variação de criativo ou público nas campanhas de mensagens para recuperar alcance e voltar a crescer acima de 6 conversas semanais.',
+    'Acompanhar separadamente seguidores de tráfego e de mensagens nas próximas semanas para validar qual objetivo está puxando crescimento real de perfil.'
+  ]
+};
+
+function deltaClass(tendencia) {
+  if (tendencia === 'positivo') return 'up';
+  if (tendencia === 'negativo') return 'down';
+  return 'neutral';
+}
+
+function renderHero(items) {
+  const el = document.getElementById('meta-hero');
+  el.innerHTML = items.map((item) => `
+    <div class="hero-item">
+      <div class="hero-label">${item.label}</div>
+      <div class="hero-value">${item.valor}</div>
+      <div class="hero-sub">${item.sub}</div>
+    </div>
+  `).join('');
+}
+
+function renderKPIs(items) {
+  const el = document.getElementById('meta-kpis');
+  el.innerHTML = items.map((item) => `
+    <div class="kpi">
+      <div class="kpi-label">${item.label}</div>
+      <div class="kpi-value">${item.valor}</div>
+      ${item.delta ? `<span class="kpi-delta ${deltaClass(item.tendencia)}">${item.delta}</span>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderFunnel(containerId, items) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const max = items[0]?.valor || 1;
+  el.innerHTML = items.map((item) => {
+    const pct = max ? Math.max(0, Math.round((item.valor / max) * 100)) : 0;
+    return `
+      <div class="funnel-step">
+        <div class="funnel-label">${item.label}</div>
+        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${pct}%"></div></div>
+        <div class="funnel-val">${item.valor.toLocaleString('pt-BR')}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderDistrib(rows) {
+  const el = document.getElementById('meta-distrib');
+  if (!el) return;
+  el.innerHTML = rows.map((row) => `
+    <tr>
+      <td>${row.tipo}</td>
+      <td class="val">${row.resultados.toLocaleString('pt-BR')}</td>
+      <td class="val">${row.custo_unitario}</td>
+    </tr>
+  `).join('');
+}
+
+function renderComp(comp) {
+  const title = document.getElementById('comp-title');
+  const el = document.getElementById('comp-tbody');
+  if (!title || !el) return;
+  title.textContent = `Variação — Semana Anterior (${comp.semana_anterior.label})`;
+  el.innerHTML = comp.rows.map((row) => `
+    <tr>
+      <td>${row.metrica}</td>
+      <td class="num">${row.anterior}</td>
+      <td class="num">${row.atual}</td>
+      <td><span class="badge ${row.badge}">${row.delta}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderInsights(analise) {
+  const pos = document.getElementById('resumo-positivos');
+  const neg = document.getElementById('resumo-atencao');
+  pos.innerHTML = `
+    <div class="insight-title pos">Pontos Positivos</div>
+    ${analise.positivos.map((text) => `<div class="insight-item"><div class="insight-dot pos"></div><span>${text}</span></div>`).join('')}
+  `;
+  neg.innerHTML = `
+    <div class="insight-title neg">Pontos de Atenção</div>
+    ${analise.atencao.map((text) => `<div class="insight-item"><div class="insight-dot neg"></div><span>${text}</span></div>`).join('')}
+  `;
+}
+
+function renderSteps(passos) {
+  const el = document.getElementById('steps-card');
+  el.innerHTML = `
+    <div class="card-title">Próximos Passos</div>
+    ${passos.map((passo, index) => `
+      <div class="step-item">
+        <div class="step-num-badge">${index + 1}</div>
+        <span>${passo}</span>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderCharts(chartData) {
+  const canvas = document.getElementById('cost-chart');
+  if (!canvas) return;
+
+  Chart.defaults.font.family = "'Montserrat', sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.color = '#8A9BB0';
+
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: chartData.shortLabels,
+      datasets: [{
+        data: chartData.values,
+        backgroundColor: chartData.colors,
+        borderRadius: 8,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0D1117',
+          titleColor: '#FFFFFF',
+          bodyColor: '#8A9BB0',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            title: (items) => chartData.labels[items[0].dataIndex],
+            label: (item) => `Custo por resultado: R$ ${item.raw.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+          }
+        }
+      }
+    }
+  });
+}
+
+function exportPDF() {
+  const panels = document.querySelectorAll('.panel');
+  const tabs = document.querySelectorAll('.tab');
+  panels.forEach((panel) => { panel.style.display = 'block'; });
+  tabs.forEach((tab) => { tab.style.display = 'none'; });
+  document.querySelector('.tabs-wrapper').style.display = 'none';
+  window.print();
+  setTimeout(() => {
+    panels.forEach((panel) => { panel.style.display = ''; });
+    tabs.forEach((tab) => { tab.style.display = ''; });
+    document.querySelector('.tabs-wrapper').style.display = '';
+    const activeTab = document.querySelector('.tab.active');
+    if (!activeTab) return;
+    document.querySelectorAll('.panel').forEach((panel) => panel.classList.remove('active'));
+    document.getElementById(`panel-${activeTab.dataset.tab}`).classList.add('active');
+  }, 1000);
+}
+
+document.getElementById('tabs').addEventListener('click', (event) => {
+  const tab = event.target.closest('[data-tab]');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach((item) => item.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach((panel) => panel.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+});
+
+document.getElementById('header-title').innerHTML = 'Atividade Pilates <span>Chácara Klabin</span>';
+document.getElementById('period-badge').textContent = DATA.periodo.label;
+document.getElementById('footer').textContent = `Relatório gerado automaticamente · ${DATA.periodo.label} · ${DATA.cliente}`;
+
+renderHero(DATA.meta.hero);
+renderKPIs(DATA.meta.kpis);
+renderFunnel('funnel-msg', DATA.meta.funnel_msg);
+renderFunnel('funnel-traf', DATA.meta.funnel_traf);
+renderDistrib(DATA.meta.distribuicao_tipo);
+renderComp(DATA.comparativo);
+renderInsights(DATA.analise);
+renderSteps(DATA.proximos_passos);
+renderCharts(DATA.meta.chart);
+</script>
+</body>
+</html>
