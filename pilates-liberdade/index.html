@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Semanal | Atividade Pilates Liberdade</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --border: #E8ECF0;
+  --border-strong: #D0D7E0;
+  --ink: #0D1117;
+  --ink-mid: #4A5568;
+  --ink-dim: #8A9BB0;
+  --meta: #0866FF;
+  --meta-light: #E7EFFF;
+  --green: #16A34A;
+  --green-bg: #F0FDF4;
+  --red: #DC2626;
+  --red-bg: #FEF2F2;
+  --amber: #D97706;
+  --amber-bg: #FFFBEB;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.header, .tabs-wrapper { background: var(--surface); }
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.header-left { display: flex; flex-direction: column; gap: 4px; }
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.header-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+.header-title span { color: var(--meta); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.period-badge, .week-badge, .btn-pdf {
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+.period-badge {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 7px 14px;
+  color: var(--ink-mid);
+}
+.week-badge {
+  background: var(--ink);
+  color: #fff;
+  padding: 7px 14px;
+}
+.btn-pdf {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  padding: 8px 16px;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-pdf:hover { background: var(--bg); border-color: var(--ink); color: var(--ink); }
+.btn-pdf svg { width: 14px; height: 14px; }
+
+.tabs-wrapper {
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  overflow-x: auto;
+}
+.tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+.tab.active { color: var(--meta); border-bottom-color: var(--meta); }
+
+.panel {
+  display: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 40px;
+}
+.panel.active { display: block; }
+.panel-title-print {
+  display: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.platform-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--meta-light);
+  color: var(--meta);
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.hero {
+  background: var(--meta);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  box-shadow: var(--shadow-md);
+}
+.hero-item {
+  padding: 0 24px;
+  border-right: 1px solid rgba(255,255,255,0.16);
+}
+.hero-item:first-child { padding-left: 0; }
+.hero-item:last-child { padding-right: 0; border-right: none; }
+.hero-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 10px;
+}
+.hero-value {
+  font-size: 31px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.hero-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.5;
+}
+
+.kpi-grid, .two-col, .insights-grid {
+  display: grid;
+  gap: 16px;
+}
+.kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 24px;
+}
+.two-col, .insights-grid { grid-template-columns: 1fr 1fr; }
+
+.card, .kpi, .insight-card, .steps-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card, .insight-card, .steps-card { padding: 24px; }
+.kpi { padding: 20px; }
+
+.card-title, .insight-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.insight-title.pos { color: var(--green); }
+.insight-title.neg { color: var(--red); }
+
+.kpi-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 10px;
+}
+.kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.kpi-delta, .badge {
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.up, .good { background: var(--green-bg); color: var(--green); }
+.down, .bad { background: var(--red-bg); color: var(--red); }
+.neutral { background: var(--amber-bg); color: var(--amber); }
+
+.funnel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.funnel-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+.funnel-label {
+  min-width: 120px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-mid);
+}
+.funnel-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+.funnel-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--meta);
+}
+.funnel-val {
+  min-width: 60px;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { border-bottom: 1px solid var(--border); }
+th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0 0 10px;
+}
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 10px 0; color: var(--ink-mid); }
+td.val, td.num { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.chart-wrap { height: 320px; }
+.note {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--ink-dim);
+  line-height: 1.5;
+}
+
+.insight-item, .step-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--ink-mid);
+  line-height: 1.6;
+}
+.insight-item:last-child, .step-item:last-child { border-bottom: none; }
+.insight-dot {
+  width: 5px;
+  height: 5px;
+  margin-top: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.insight-dot.pos { background: var(--green); }
+.insight-dot.neg { background: var(--red); }
+.step-num-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--meta-light);
+  color: var(--meta);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.footer {
+  text-align: center;
+  padding: 28px 40px;
+  font-size: 11px;
+  color: var(--ink-dim);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+@media (max-width: 720px) {
+  .header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+  .header-right { flex-wrap: wrap; }
+  .tabs-wrapper { padding: 0 20px; }
+  .panel { padding: 20px; }
+  .hero, .two-col, .insights-grid { grid-template-columns: 1fr; }
+  .hero-item {
+    padding: 0 0 16px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.16);
+  }
+  .hero-item:last-child { padding-bottom: 0; border-bottom: none; }
+}
+
+@media print {
+  @page { margin: 16mm 14mm; size: A4; }
+  body { background: #fff !important; }
+  .btn-pdf, .tabs-wrapper { display: none !important; }
+  .header { padding: 16px 24px !important; border-bottom: 1px solid var(--border) !important; }
+  .panel { display: block !important; padding: 20px 24px !important; page-break-after: always; }
+  .panel:last-of-type { page-break-after: avoid; }
+  .panel-title-print { display: block; }
+  .hero, .kpi, .card, .insight-card, .steps-card, .badge, .kpi-delta { box-shadow: none !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="header-eyebrow">Relatório Semanal</div>
+    <div class="header-title">Atividade Pilates <span>Liberdade</span></div>
+  </div>
+  <div class="header-right">
+    <div class="period-badge" id="period-badge"></div>
+    <div class="week-badge">SEMANAL</div>
+    <button class="btn-pdf" onclick="exportPDF()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Exportar PDF
+    </button>
+  </div>
+</div>
+
+<div class="tabs-wrapper" id="tabs">
+  <button class="tab active" data-tab="meta">Meta Ads</button>
+  <button class="tab" data-tab="resumo">Resumo</button>
+</div>
+
+<div class="panel active" id="panel-meta">
+  <div class="panel-title-print">Meta Ads — Visão Geral</div>
+  <div class="section-header">
+    <div class="platform-badge">Meta Ads</div>
+    <span class="section-label">Campanha de Mensagens</span>
+  </div>
+
+  <div class="hero" id="meta-hero"></div>
+  <div class="kpi-grid" id="meta-kpis"></div>
+
+  <div class="two-col" style="margin-bottom: 20px;">
+    <div class="card">
+      <div class="card-title">Funil de Resultado</div>
+      <div class="funnel-stack" id="funnel-msg"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Custo por Resultado por Conjunto</div>
+      <div class="chart-wrap"><canvas id="cost-chart"></canvas></div>
+      <div class="note">Azul escuro representa conjunto de mensagens. Nesta semana houve um conjunto ativo principal.</div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-bottom: 20px;">
+    <div class="card">
+      <div class="card-title">Distribuição por Tipo de Resultado</div>
+      <table>
+        <thead><tr><th>Tipo</th><th>Quantidade</th><th>Custo Unitário</th></tr></thead>
+        <tbody id="meta-distrib"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title" id="comp-title">Variação — Semana Anterior</div>
+      <table>
+        <thead><tr><th>Métrica</th><th>Sem. Ant.</th><th>Esta Sem.</th><th>Δ</th></tr></thead>
+        <tbody id="comp-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-resumo">
+  <div class="panel-title-print">Resumo da Semana</div>
+  <div class="insights-grid" style="margin-bottom: 20px;">
+    <div class="insight-card" id="resumo-positivos"></div>
+    <div class="insight-card" id="resumo-atencao"></div>
+  </div>
+  <div class="steps-card" id="steps-card"></div>
+</div>
+
+<div class="footer" id="footer"></div>
+
+<script>
+const DATA = {
+  cliente: 'Atividade Pilates Liberdade',
+  periodo: {
+    label: '22/03/2026 – 29/03/2026',
+    inicio: '2026-03-22',
+    fim: '2026-03-29',
+    tipo: 'semanal'
+  },
+  meta: {
+    hero: [
+      { label: 'Conversas Iniciadas', valor: '76', sub: 'Mensagens recebidas na semana atual' },
+      { label: 'Investimento', valor: 'R$ 322,72', sub: 'Volume estável versus semana anterior: +0,0%' },
+      { label: 'Custo por Conversa', valor: 'R$ 4,25', sub: 'Subiu frente aos R$ 3,02 da semana anterior' }
+    ],
+    kpis: [
+      { label: 'Conversas', valor: '76', delta: '-29,0%', tendencia: 'negativo' },
+      { label: 'Custo / Conversa', valor: 'R$ 4,25', delta: '+40,8%', tendencia: 'negativo' },
+      { label: 'Investimento', valor: 'R$ 322,72', delta: '0,0%', tendencia: 'neutro' },
+      { label: 'Cliques', valor: '316', delta: '-14,6%', tendencia: 'negativo' },
+      { label: 'CPC Médio', valor: 'R$ 1,02', delta: '+17,1%', tendencia: 'negativo' },
+      { label: 'Alcance', valor: '13.456', delta: '+7,3%', tendencia: 'positivo' },
+      { label: 'Impressões', valor: '17.570', delta: '+6,5%', tendencia: 'positivo' },
+      { label: 'Frequência', valor: '1,31', delta: '-0,8%', tendencia: 'neutro' },
+      { label: 'CTR', valor: '3,18%', delta: '-11,3%', tendencia: 'negativo' },
+      { label: 'Seguidores', valor: '12', delta: '-42,9%', tendencia: 'negativo' },
+      { label: 'Custo / Seguidor', valor: 'R$ 26,89', delta: '+75,0%', tendencia: 'negativo' }
+    ],
+    funnel: [
+      { label: 'Alcance', valor: 13456 },
+      { label: 'Cliques', valor: 316 },
+      { label: 'Conversas', valor: 76 },
+      { label: 'Seguidores', valor: 12 }
+    ],
+    distribuicao_tipo: [
+      { tipo: 'Conversas', resultados: 76, custo_unitario: 'R$ 4,25' },
+      { tipo: 'Seguidores', resultados: 12, custo_unitario: 'R$ 26,89' }
+    ],
+    chart: {
+      labels: ['[01][WHATSAPP][1KM ENDEREÇO][PILATES+SAUDE E BOA FORMA][25-64][F+M][FB+INSTA]'],
+      shortLabels: ['WHATSAPP'],
+      values: [4.25],
+      colors: ['#0866FF']
+    }
+  },
+  comparativo: {
+    semana_anterior: { label: '15/03 – 22/03' },
+    rows: [
+      { metrica: 'Conversas', anterior: '107', atual: '76', delta: '-29,0%', badge: 'bad' },
+      { metrica: 'Custo / Conversa', anterior: 'R$ 3,02', atual: 'R$ 4,25', delta: '+40,8%', badge: 'bad' },
+      { metrica: 'Investimento', anterior: 'R$ 322,69', atual: 'R$ 322,72', delta: '0,0%', badge: 'neutral' },
+      { metrica: 'Cliques', anterior: '370', atual: '316', delta: '-14,6%', badge: 'bad' },
+      { metrica: 'CPC Médio', anterior: 'R$ 0,87', atual: 'R$ 1,02', delta: '+17,1%', badge: 'bad' },
+      { metrica: 'Alcance', anterior: '12.537', atual: '13.456', delta: '+7,3%', badge: 'good' },
+      { metrica: 'Impressões', anterior: '16.501', atual: '17.570', delta: '+6,5%', badge: 'good' },
+      { metrica: 'Frequência', anterior: '1,32', atual: '1,31', delta: '-0,8%', badge: 'neutral' },
+      { metrica: 'CTR', anterior: '3,58%', atual: '3,18%', delta: '-11,3%', badge: 'bad' },
+      { metrica: 'Seguidores', anterior: '21', atual: '12', delta: '-42,9%', badge: 'bad' },
+      { metrica: 'Custo / Seguidor', anterior: 'R$ 15,37', atual: 'R$ 26,89', delta: '+75,0%', badge: 'bad' }
+    ]
+  },
+  analise: {
+    positivos: [
+      'O alcance foi de 12.537 para 13.456 (+7,3%) e as impressões subiram de 16.501 para 17.570 (+6,5%) mantendo praticamente o mesmo investimento: R$ 322,69 para R$ 322,72 (0,0%).',
+      'A frequência caiu levemente de 1,32 para 1,31 (-0,8%), preservando a entrega sem sinal de saturação na semana.'
+    ],
+    atencao: [
+      'As conversas caíram de 107 para 76 (-29,0%), enquanto o custo por conversa subiu de R$ 3,02 para R$ 4,25 (+40,8%).',
+      'Os seguidores foram de 21 para 12 (-42,9%) e o custo por seguidor aumentou de R$ 15,37 para R$ 26,89 (+75,0%).'
+    ]
+  },
+  proximos_passos: [
+    'Revisar criativos e chamadas do conjunto principal para recuperar volume de conversas sem elevar ainda mais o custo por conversa.',
+    'Testar nova variação de público ou mensagem no WhatsApp para tentar voltar ao patamar acima de 100 conversas semanais.',
+    'Acompanhar cliques e CTR nas próximas semanas, porque a queda de tráfego qualificado precedeu a redução das conversas.'
+  ]
+};
+
+function deltaClass(tendencia) {
+  if (tendencia === 'positivo') return 'up';
+  if (tendencia === 'negativo') return 'down';
+  return 'neutral';
+}
+
+function renderHero(items) {
+  document.getElementById('meta-hero').innerHTML = items.map((item) => `
+    <div class="hero-item">
+      <div class="hero-label">${item.label}</div>
+      <div class="hero-value">${item.valor}</div>
+      <div class="hero-sub">${item.sub}</div>
+    </div>
+  `).join('');
+}
+
+function renderKPIs(items) {
+  document.getElementById('meta-kpis').innerHTML = items.map((item) => `
+    <div class="kpi">
+      <div class="kpi-label">${item.label}</div>
+      <div class="kpi-value">${item.valor}</div>
+      <span class="kpi-delta ${deltaClass(item.tendencia)}">${item.delta}</span>
+    </div>
+  `).join('');
+}
+
+function renderFunnel(items) {
+  const max = items[0]?.valor || 1;
+  document.getElementById('funnel-msg').innerHTML = items.map((item) => `
+    <div class="funnel-step">
+      <div class="funnel-label">${item.label}</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${Math.round((item.valor / max) * 100)}%"></div></div>
+      <div class="funnel-val">${item.valor.toLocaleString('pt-BR')}</div>
+    </div>
+  `).join('');
+}
+
+function renderDistrib(rows) {
+  document.getElementById('meta-distrib').innerHTML = rows.map((row) => `
+    <tr>
+      <td>${row.tipo}</td>
+      <td class="val">${row.resultados.toLocaleString('pt-BR')}</td>
+      <td class="val">${row.custo_unitario}</td>
+    </tr>
+  `).join('');
+}
+
+function renderComp(comp) {
+  document.getElementById('comp-title').textContent = `Variação — Semana Anterior (${comp.semana_anterior.label})`;
+  document.getElementById('comp-tbody').innerHTML = comp.rows.map((row) => `
+    <tr>
+      <td>${row.metrica}</td>
+      <td class="num">${row.anterior}</td>
+      <td class="num">${row.atual}</td>
+      <td><span class="badge ${row.badge}">${row.delta}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderInsights(analise) {
+  document.getElementById('resumo-positivos').innerHTML = `
+    <div class="insight-title pos">Pontos Positivos</div>
+    ${analise.positivos.map((text) => `<div class="insight-item"><div class="insight-dot pos"></div><span>${text}</span></div>`).join('')}
+  `;
+  document.getElementById('resumo-atencao').innerHTML = `
+    <div class="insight-title neg">Pontos de Atenção</div>
+    ${analise.atencao.map((text) => `<div class="insight-item"><div class="insight-dot neg"></div><span>${text}</span></div>`).join('')}
+  `;
+}
+
+function renderSteps(passos) {
+  document.getElementById('steps-card').innerHTML = `
+    <div class="card-title">Próximos Passos</div>
+    ${passos.map((passo, index) => `
+      <div class="step-item">
+        <div class="step-num-badge">${index + 1}</div>
+        <span>${passo}</span>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderCharts(chartData) {
+  const canvas = document.getElementById('cost-chart');
+  Chart.defaults.font.family = "'Montserrat', sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.color = '#8A9BB0';
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: chartData.shortLabels,
+      datasets: [{
+        data: chartData.values,
+        backgroundColor: chartData.colors,
+        borderRadius: 8,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0D1117',
+          titleColor: '#FFFFFF',
+          bodyColor: '#8A9BB0',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            title: (items) => chartData.labels[items[0].dataIndex],
+            label: (item) => `Custo por conversa: R$ ${item.raw.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: (value) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+          }
+        }
+      }
+    }
+  });
+}
+
+function exportPDF() {
+  const panels = document.querySelectorAll('.panel');
+  const tabs = document.querySelectorAll('.tab');
+  panels.forEach((panel) => { panel.style.display = 'block'; });
+  tabs.forEach((tab) => { tab.style.display = 'none'; });
+  document.querySelector('.tabs-wrapper').style.display = 'none';
+  window.print();
+  setTimeout(() => {
+    panels.forEach((panel) => { panel.style.display = ''; });
+    tabs.forEach((tab) => { tab.style.display = ''; });
+    document.querySelector('.tabs-wrapper').style.display = '';
+    const activeTab = document.querySelector('.tab.active');
+    if (!activeTab) return;
+    document.querySelectorAll('.panel').forEach((panel) => panel.classList.remove('active'));
+    document.getElementById(`panel-${activeTab.dataset.tab}`).classList.add('active');
+  }, 1000);
+}
+
+document.getElementById('tabs').addEventListener('click', (event) => {
+  const tab = event.target.closest('[data-tab]');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach((item) => item.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach((panel) => panel.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+});
+
+document.getElementById('period-badge').textContent = DATA.periodo.label;
+document.getElementById('footer').textContent = `Relatório gerado automaticamente · ${DATA.periodo.label} · ${DATA.cliente}`;
+
+renderHero(DATA.meta.hero);
+renderKPIs(DATA.meta.kpis);
+renderFunnel(DATA.meta.funnel);
+renderDistrib(DATA.meta.distribuicao_tipo);
+renderComp(DATA.comparativo);
+renderInsights(DATA.analise);
+renderSteps(DATA.proximos_passos);
+renderCharts(DATA.meta.chart);
+</script>
+</body>
+</html>
