@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Mensal | Atividade Pilates - Aclimação</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --meta: #0866FF;
+  --meta-light: #EEF3FF;
+  --ink: #1a1a2e;
+  --ink-mid: #64748B;
+  --ink-dim: #94A3B8;
+  --border: #F0F2F8;
+  --bg: #F7F8FA;
+  --white: #ffffff;
+  --green: #15803D;
+  --green-bg: #DCFCE7;
+  --red: #DC2626;
+  --red-bg: #FEE2E2;
+  --amber: #92660A;
+  --amber-bg: #FFF3CD;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; font-size: 13px; }
+.header { background: var(--ink); padding: 18px 36px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-logo {
+  width: 40px; height: 40px; border-radius: 10px; overflow: hidden;
+  background: var(--meta); display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: 13px; flex-shrink: 0;
+}
+.header-title { color: #fff; font-size: 16px; font-weight: 800; }
+.header-title span { color: var(--meta); }
+.header-sub { color: rgba(255,255,255,0.4); font-size: 11px; font-weight: 500; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.badge-mensal { background: var(--meta); color: #fff; border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+.badge-periodo { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 600; }
+.header-pdf { background: #fff; color: var(--ink); border: 0; border-radius: 20px; padding: 5px 14px; font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+.tabs-wrapper { background: var(--white); border-bottom: 2px solid var(--border); padding: 0 36px; display: flex; overflow-x: auto; }
+.tab { padding: 14px 22px; font-size: 12px; font-weight: 700; color: var(--ink-dim); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--meta); border-bottom-color: var(--meta); }
+.tab.tab-resumo.active { color: var(--ink); border-bottom-color: var(--ink); }
+.panel { display: none; }
+.panel.active { display: block; }
+.content { padding: 28px 36px; max-width: 1200px; margin: 0 auto; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; margin-top: 30px; }
+.section-header:first-child { margin-top: 0; }
+.platform-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; background: var(--meta-light); color: var(--meta); }
+.section-label { font-size: 11px; font-weight: 600; color: var(--ink-dim); margin-left: auto; }
+.hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.hero-card { background: var(--meta); border-radius: 14px; padding: 22px 20px; color: #fff; position: relative; overflow: hidden; }
+.hero-card::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.07); border-radius: 50%; }
+.hero-card.dark { background: var(--ink); }
+.hero-label { font-size: 10px; font-weight: 700; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+.hero-value { font-size: 28px; font-weight: 800; line-height: 1; }
+.hero-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; opacity: 0.85; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 3px 9px; margin-top: 8px; }
+.hero-sub { font-size: 11px; opacity: 0.5; margin-top: 5px; font-weight: 500; }
+.kpi-grid, .metrics-extra-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.metrics-extra-grid { grid-template-columns: repeat(3, 1fr); }
+.kpi, .metric-extra-card, .card, .insight-card, .camp-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.kpi { padding: 18px 16px; transition: box-shadow 0.2s; }
+.kpi:hover { box-shadow: var(--shadow-md); }
+.kpi.highlight { border-top: 3px solid var(--meta); }
+.kpi-label, .metric-extra-label, .camp-metric-label { font-size: 10px; font-weight: 700; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 8px; }
+.kpi-value, .metric-extra-value, .camp-metric-value { font-size: 20px; font-weight: 800; color: var(--ink); line-height: 1; }
+.kpi-delta { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; margin-top: 8px; }
+.kpi-delta.up { background: var(--green-bg); color: var(--green); }
+.kpi-delta.down { background: var(--red-bg); color: var(--red); }
+.kpi-delta.neutral { background: var(--amber-bg); color: var(--amber); }
+.metric-extra-card { padding: 16px; }
+.metric-extra-delta { font-size: 11px; font-weight: 600; color: var(--ink-dim); margin-top: 4px; }
+.metric-extra-delta span.up { color: var(--green); }
+.metric-extra-delta span.down { color: var(--red); }
+.card { padding: 22px; margin-bottom: 20px; }
+.card-title { font-size: 11px; font-weight: 700; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.comp-table, .distrib-table { width: 100%; border-collapse: collapse; }
+.comp-table th, .distrib-table th { font-size: 10px; font-weight: 700; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.7px; padding-bottom: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.comp-table td, .distrib-table td { padding: 11px 8px 11px 0; font-size: 12px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td, .distrib-table tr:last-child td { border-bottom: none; }
+.comp-table td:first-child { color: var(--ink-mid); font-weight: 500; }
+.comp-table td.num, .distrib-table td.val { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.badge { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+.badge.good { background: var(--green-bg); color: var(--green); }
+.badge.bad { background: var(--red-bg); color: var(--red); }
+.badge.neutral { background: var(--amber-bg); color: var(--amber); }
+.camp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.camp-card { padding: 20px; border-top: 3px solid var(--meta); }
+.camp-card.camp-msg { border-top-color: #0866FF; }
+.camp-obj-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ink-dim); background: var(--bg); border-radius: 20px; padding: 4px 10px; margin-bottom: 8px; }
+.camp-name { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 14px; line-height: 1.4; }
+.camp-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.camp-metric { display: flex; flex-direction: column; gap: 2px; }
+.camp-metric-value { font-size: 16px; }
+.insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.insight-card { padding: 20px; }
+.insight-card.full { grid-column: 1 / -1; }
+.insight-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+.insight-title.pos { color: var(--green); }
+.insight-title.neg { color: var(--red); }
+.insight-title.blue { color: var(--meta); }
+.insight-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.insight-icon.pos { background: var(--green-bg); }
+.insight-icon.neg { background: var(--red-bg); }
+.insight-icon.blue { background: var(--meta-light); }
+.insight-item { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+.insight-item:last-child { margin-bottom: 0; }
+.insight-num { width: 20px; height: 20px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--ink-dim); flex-shrink: 0; }
+.insight-text { font-size: 12px; font-weight: 500; color: #444; line-height: 1.55; }
+.footer { text-align: center; padding: 24px; font-size: 11px; color: var(--ink-dim); font-weight: 500; border-top: 1px solid var(--border); margin-top: 40px; background: var(--white); }
+@page { size: A4 portrait; margin: 10mm; }
+@media print {
+  body { background: #fff; }
+  .header { position: static; }
+  .header-pdf { display: none !important; }
+  .panel { display: block !important; break-before: page; }
+  #panel-meta { break-before: auto; }
+  .content { max-width: none; padding: 20px 0; }
+  .hero-grid, .kpi-grid, .metrics-extra-grid, .insights-grid, .camp-grid { break-inside: avoid; }
+  .hero-card, .kpi, .metric-extra-card, .card, .insight-card, .camp-card { break-inside: avoid; box-shadow: none; }
+  .footer { margin-top: 12px; }
+}
+@media (max-width: 900px) {
+  .hero-grid, .kpi-grid, .metrics-extra-grid, .insights-grid { grid-template-columns: 1fr; }
+  .content { padding: 20px 16px; }
+  .header { padding: 14px 16px; }
+  .tabs-wrapper { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">AP</div>
+    <div>
+      <div class="header-title">Atividade Pilates <span>- Aclimação</span></div>
+      <div class="header-sub">Relatório Mensal · março de 2026</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="badge-mensal">MENSAL</div>
+    <div class="badge-periodo">Mar/2026</div>
+    <button class="header-pdf" type="button" onclick="exportPDF()">pdf</button>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <div class="tab active" onclick="switchTab('meta')">
+    <svg width="13" height="13" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="#0866FF"/><path d="M14.1 22.5c-1.4 0-2.2-.9-2.2-2.5v-4.6c0-2.2 1.1-3.4 2.6-3.4 1.2 0 2 .8 2.7 2.1.6-1.3 1.6-2.1 3-2.1 2 0 3.2 1.6 3.2 4.2v3.8c0 1.6-.8 2.5-2 2.5-.9 0-1.6-.5-2.1-1.5v.8c0 .8-.5 1.4-1.3 1.4-.8 0-1.3-.6-1.3-1.4v-.8c-.5 1-.9 1.5-1.6 1.5zm3.3-5.1v2.9c.3.8.7 1.1 1.2 1.1.6 0 .9-.4.9-1.2v-3.6c0-1.4-.5-2.1-1.3-2.1-.8 0-1.4.8-1.4 2.1l.6.8zm-3.1 0v2.9c.3.8.7 1.1 1.1 1.1.5 0 .8-.4.8-1.2v-3.7c0-1.3-.5-2-.9-2-.7 0-1 .7-1 2z" fill="white"/></svg>
+    Meta Ads
+  </div>
+  <div class="tab tab-resumo" onclick="switchTab('resumo')">Resumo</div>
+</div>
+
+<div class="panel active" id="panel-meta">
+<div class="content">
+  <div class="section-header">
+    <div class="platform-badge">
+      <svg width="14" height="14" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="#0866FF"/></svg>
+      Meta Ads
+    </div>
+    <span class="section-label">março de 2026</span>
+  </div>
+
+  <div class="hero-grid">
+    <div class="hero-card">
+      <div class="hero-label">Conversas</div>
+      <div class="hero-value">111</div>
+      <div class="hero-delta">▼ -2,6% vs mês ant.</div>
+      <div class="hero-sub">Mensagens recebidas no período</div>
+    </div>
+    <div class="hero-card dark">
+      <div class="hero-label">Investimento</div>
+      <div class="hero-value">R$ 1.030,87</div>
+      <div class="hero-delta">▲ +3,2% vs mês ant.</div>
+      <div class="hero-sub">Total aplicado no mês</div>
+    </div>
+    <div class="hero-card dark">
+      <div class="hero-label">Custo / Conversa</div>
+      <div class="hero-value">R$ 9,29</div>
+      <div class="hero-delta">▲ +6,0% vs mês ant.</div>
+      <div class="hero-sub">Média do mês</div>
+    </div>
+  </div>
+
+  <div class="card-title">Métricas do Mês</div>
+  <div class="kpi-grid">
+    <div class="kpi highlight">
+      <div class="kpi-label">Alcance</div>
+      <div class="kpi-value">22.609</div>
+      <div class="kpi-delta down">-10,7%</div>
+    </div>
+    <div class="kpi highlight">
+      <div class="kpi-label">Impressões</div>
+      <div class="kpi-value">59.972</div>
+      <div class="kpi-delta down">-3,5%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Cliques no Link</div>
+      <div class="kpi-value">372</div>
+      <div class="kpi-delta neutral">-1,1%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">CTR</div>
+      <div class="kpi-value">2,34%</div>
+      <div class="kpi-delta down">-6,8%</div>
+    </div>
+  </div>
+
+  <div class="card-title">Métricas de Eficiência</div>
+  <div class="metrics-extra-grid">
+    <div class="metric-extra-card">
+      <div class="metric-extra-label">CPC Médio</div>
+      <div class="metric-extra-value">R$ 2,77</div>
+      <div class="metric-extra-delta"><span class="up">+4,3%</span> vs fevereiro</div>
+    </div>
+    <div class="metric-extra-card">
+      <div class="metric-extra-label">CPM Médio</div>
+      <div class="metric-extra-value">R$ 17,19</div>
+      <div class="metric-extra-delta"><span class="up">+7,0%</span> vs fevereiro</div>
+    </div>
+    <div class="metric-extra-card">
+      <div class="metric-extra-label">Frequência</div>
+      <div class="metric-extra-value">2,65</div>
+      <div class="metric-extra-delta"><span class="up">+8,1%</span> impressões ÷ alcance</div>
+    </div>
+  </div>
+
+  <div class="card-title">Métricas por Campanha</div>
+  <div class="camp-grid">
+    <div class="camp-card camp-msg">
+      <div class="camp-obj-badge">Mensagens</div>
+      <div class="camp-name">[01][WHATSAPP][SA-03][AUTO]</div>
+      <div class="camp-metrics">
+        <div class="camp-metric"><span class="camp-metric-label">Conversas</span><span class="camp-metric-value">111</span></div>
+        <div class="camp-metric"><span class="camp-metric-label">Investimento</span><span class="camp-metric-value">R$ 1.030,87</span></div>
+        <div class="camp-metric"><span class="camp-metric-label">Custo / Conversa</span><span class="camp-metric-value">R$ 9,29</span></div>
+        <div class="camp-metric"><span class="camp-metric-label">Alcance</span><span class="camp-metric-value">22.609</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Variação — Mês Anterior (Fev/2026)</div>
+    <table class="comp-table">
+      <thead><tr><th>Métrica</th><th>Mês Anterior</th><th>Este Mês</th><th>Δ</th></tr></thead>
+      <tbody>
+        <tr><td>Investimento</td><td class="num">R$ 999,15</td><td class="num">R$ 1.030,87</td><td><span class="badge neutral">+3,2%</span></td></tr>
+        <tr><td>Conversas</td><td class="num">114</td><td class="num">111</td><td><span class="badge bad">-2,6%</span></td></tr>
+        <tr><td>Custo / Conversa</td><td class="num">R$ 8,76</td><td class="num">R$ 9,29</td><td><span class="badge bad">+6,0%</span></td></tr>
+        <tr><td>Alcance</td><td class="num">25.331</td><td class="num">22.609</td><td><span class="badge bad">-10,7%</span></td></tr>
+        <tr><td>Impressões</td><td class="num">62.168</td><td class="num">59.972</td><td><span class="badge bad">-3,5%</span></td></tr>
+        <tr><td>Cliques no Link</td><td class="num">376</td><td class="num">372</td><td><span class="badge neutral">-1,1%</span></td></tr>
+        <tr><td>CPC Médio</td><td class="num">R$ 2,66</td><td class="num">R$ 2,77</td><td><span class="badge bad">+4,3%</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Distribuição por Tipo de Resultado</div>
+    <table class="distrib-table">
+      <thead><tr><th>Tipo</th><th>Resultados</th><th>Custo Unitário</th></tr></thead>
+      <tbody>
+        <tr><td>Conversas por mensagem</td><td class="val">111</td><td class="val">R$ 9,29</td></tr>
+        <tr><td>Cliques no link</td><td class="val">372</td><td class="val">R$ 2,77</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<div class="panel" id="panel-resumo">
+<div class="content">
+  <div class="insights-grid">
+    <div class="insight-card">
+      <div class="insight-title pos">
+        <div class="insight-icon pos">✓</div>
+        Pontos Positivos
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">1</div>
+        <div class="insight-text">O volume de conversas se manteve estável no comparativo mensal, passando de 114 para 111 (-2,6%), com investimento praticamente no mesmo patamar.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">2</div>
+        <div class="insight-text">Mesmo com queda de alcance de 25.331 para 22.609 (-10,7%), a conta preservou praticamente o mesmo volume de cliques no link, de 376 para 372 (-1,1%).</div>
+      </div>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-title neg">
+        <div class="insight-icon neg">!</div>
+        Pontos de Atenção
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">1</div>
+        <div class="insight-text">O custo por conversa subiu de R$ 8,76 para R$ 9,29 (+6,0%), indicando perda de eficiência no objetivo principal.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">2</div>
+        <div class="insight-text">O CPC médio avançou de R$ 2,66 para R$ 2,77 (+4,3%) e o CPM de R$ 16,07 para R$ 17,19 (+7,0%), com frequência maior no período.</div>
+      </div>
+    </div>
+
+    <div class="insight-card full">
+      <div class="insight-title blue">
+        <div class="insight-icon blue">→</div>
+        Próximos Passos
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">1</div>
+        <div class="insight-text">Revisar criativos e variações de copy da campanha de WhatsApp para buscar ganho de eficiência sem elevar investimento.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">2</div>
+        <div class="insight-text">Monitorar a frequência nas próximas semanas para evitar desgaste da campanha ativa e perda de taxa de resposta.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-num">3</div>
+        <div class="insight-text">Testar novos ângulos de oferta e segmentação para recuperar alcance sem pressionar ainda mais CPC e custo por conversa.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="footer">
+  Relatório Mensal · Março de 2026 · Atividade Pilates - Aclimação
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.panel').forEach(function(panel) { panel.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(button) { button.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  var map = { meta: 0, resumo: 1 };
+  document.querySelectorAll('.tab')[map[tab]].classList.add('active');
+}
+
+function exportPDF() {
+  var button = document.querySelector('.header-pdf');
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'abrindo...';
+  }
+  setTimeout(function() {
+    window.print();
+  }, 50);
+}
+
+window.addEventListener('afterprint', function() {
+  var button = document.querySelector('.header-pdf');
+  if (button) {
+    button.disabled = false;
+    button.textContent = 'pdf';
+  }
+});
+</script>
+
+</body>
+</html>
