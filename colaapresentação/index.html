@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Cola — Marj EDP</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --geo: #E8642A;
+  --soc: #8B6FD4;
+  --eco: #D94040;
+  --cul: #C9A000;
+  --tec: #2196C9;
+  --bg: #0E0E10;
+  --surface: #1C1C20;
+  --border: rgba(255,255,255,0.09);
+  --text: #F0F0F2;
+  --muted: #7A7A8A;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { background: var(--bg); font-family: 'Montserrat', sans-serif; color: var(--text); }
+
+.header {
+  padding: 60px 20px 22px;
+  padding-top: calc(56px + env(safe-area-inset-top, 0px));
+}
+.header-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+}
+.header h1 {
+  font-size: 28px; font-weight: 900; letter-spacing: -0.03em;
+  line-height: 1.05; margin-bottom: 6px;
+}
+.header-sub { font-size: 13px; font-weight: 500; color: var(--muted); }
+
+.tabs-bar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px 0;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,0.13);
+  color: var(--muted);
+  background: transparent;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  user-select: none;
+}
+.tab.active { border-color: transparent; color: #fff; }
+.tab[data-i="0"].active { background: var(--geo); }
+.tab[data-i="1"].active { background: var(--soc); }
+.tab[data-i="2"].active { background: var(--eco); }
+.tab[data-i="3"].active { background: var(--cul); }
+.tab[data-i="4"].active { background: var(--tec); }
+
+.content { padding: 0 16px; }
+.panel { display: none; padding: 20px 0 80px; }
+.panel.active { display: block; animation: fadeUp .22s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+.slabel {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted);
+  margin: 20px 0 10px;
+}
+.slabel:first-of-type { margin-top: 0; }
+
+.nums {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.ncard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 12px 12px;
+}
+.ncard .val {
+  font-size: 22px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 1;
+  margin-bottom: 5px;
+}
+.ncard .lbl {
+  font-size: 11px; color: var(--muted);
+  font-weight: 500; line-height: 1.4;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 16px 16px 20px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+}
+.card h3 {
+  font-size: 13px; font-weight: 800;
+  margin-bottom: 10px; line-height: 1.3;
+}
+.card ul { list-style: none; }
+.card li {
+  font-size: 13px; font-weight: 500;
+  color: rgba(240,240,242,0.78);
+  line-height: 1.6; margin-bottom: 7px;
+  padding-left: 14px; position: relative;
+}
+.card li::before {
+  content: '—'; position: absolute; left: 0;
+  opacity: 0.38; font-weight: 700;
+}
+.card li:last-child { margin-bottom: 0; }
+.card li strong { color: #fff; font-weight: 700; }
+
+.hl {
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid transparent;
+}
+.hl-tag {
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  margin-bottom: 6px; opacity: 0.75;
+}
+.hl p {
+  font-size: 13px; font-weight: 500;
+  line-height: 1.65; color: rgba(255,255,255,0.88);
+}
+.hl p strong { color: #fff; }
+
+.t-geo .ncard .val { color: var(--geo); }
+.t-geo .card::before { background: var(--geo); }
+.t-geo .hl { background: rgba(232,100,42,0.1); border-color: rgba(232,100,42,0.22); }
+.t-geo .hl-tag { color: var(--geo); }
+
+.t-soc .ncard .val { color: var(--soc); }
+.t-soc .card::before { background: var(--soc); }
+.t-soc .hl { background: rgba(139,111,212,0.1); border-color: rgba(139,111,212,0.22); }
+.t-soc .hl-tag { color: var(--soc); }
+
+.t-eco .ncard .val { color: var(--eco); }
+.t-eco .card::before { background: var(--eco); }
+.t-eco .hl { background: rgba(217,64,64,0.1); border-color: rgba(217,64,64,0.22); }
+.t-eco .hl-tag { color: var(--eco); }
+
+.t-cul .ncard .val { color: var(--cul); }
+.t-cul .card::before { background: var(--cul); }
+.t-cul .hl { background: rgba(201,160,0,0.1); border-color: rgba(201,160,0,0.22); }
+.t-cul .hl-tag { color: var(--cul); }
+
+.t-tec .ncard .val { color: var(--tec); }
+.t-tec .card::before { background: var(--tec); }
+.t-tec .hl { background: rgba(33,150,201,0.1); border-color: rgba(33,150,201,0.22); }
+.t-tec .hl-tag { color: var(--tec); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Comércio Exterior · Grupo 6</div>
+  <h1>Cola para<br><span style="color:var(--geo)">Apresentação</span></h1>
+  <div class="header-sub">Marj EDP — Ahmed Al Maghribi</div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tabs">
+    <button class="tab active" data-i="0">🌍 Geográficos</button>
+    <button class="tab" data-i="1">🏛️ Sócio-Políticos</button>
+    <button class="tab" data-i="2">💰 Econômicos</button>
+    <button class="tab" data-i="3">🎭 Culturais</button>
+    <button class="tab" data-i="4">⚙️ Tecnológicos</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="panel active t-geo" data-i="0">
+    <div class="slabel">Números que você precisa saber</div>
+    <div class="nums">
+      <div class="ncard"><div class="val">2º</div><div class="lbl">maior consumidor de fragrâncias do mundo</div></div>
+      <div class="ncard"><div class="val">R$16bi</div><div class="lbl">mercado anual de perfumes no Brasil</div></div>
+      <div class="ncard"><div class="val">93%</div><div class="lbl">das vendas dominadas por marcas nacionais</div></div>
+      <div class="ncard"><div class="val">380%</div><div class="lbl">crescimento das fragrâncias árabes em 2024</div></div>
+      <div class="ncard"><div class="val">45%</div><div class="lbl">do volume consumido vem do Nordeste</div></div>
+      <div class="ncard"><div class="val">20–35</div><div class="lbl">dias de trânsito marítimo EAU → Brasil</div></div>
+    </div>
+    <div class="slabel">Argumentos principais</div>
+    <div class="card">
+      <h3>O Brasil como mercado consumidor</h3>
+      <ul>
+        <li>Só os EUA consomem mais perfume que o Brasil no mundo inteiro</li>
+        <li><strong>78% da população</strong> usa algum perfume regularmente — virou item do dia a dia</li>
+        <li>Nordeste lidera o volume, mas São Paulo tem o maior ticket médio</li>
+        <li>E-commerce de beleza cresce <strong>3x mais rápido</strong> que lojas físicas</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>O segmento árabe em alta</h3>
+      <ul>
+        <li>Fragrâncias árabes movimentaram mais de <strong>R$ 20 milhões</strong> em 2024</li>
+        <li>Lattafa, Armaf e Al Haramain já validaram a demanda — o mercado existe</li>
+        <li>Adaptação mínima: rotulagem em português e registro na ANVISA</li>
+        <li>Parfum, Elixir e Intense cresceram <strong>83% em valor</strong> e 72% em unidades</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Logística — Porto Jebel Ali (Dubai)</h3>
+      <ul>
+        <li>Um dos maiores e mais modernos portos do mundo</li>
+        <li>Importação em volume dilui o frete e torna o preço competitivo</li>
+        <li>Operadores especializados facilitam a integração com o Siscomex</li>
+      </ul>
+    </div>
+    <div class="hl">
+      <div class="hl-tag">⚡ Curiosidade para usar</div>
+      <p>O Grupo Boticário fatura <strong>R$ 38,1 bilhões em GMV</strong> (2025). Isso mostra o tamanho do mercado — mas também o desafio: para competir com gigantes locais, o Marj precisa de posicionamento premium bem definido.</p>
+    </div>
+  </div>
+
+  <div class="panel t-soc" data-i="1">
+    <div class="slabel">Números que você precisa saber</div>
+    <div class="nums">
+      <div class="ncard"><div class="val">Baixo</div><div class="lbl">risco-país dos Emirados Árabes Unidos</div></div>
+      <div class="ncard"><div class="val">Zero</div><div class="lbl">acordos comerciais preferenciais Brasil–EAU</div></div>
+      <div class="ncard"><div class="val">IDH</div><div class="lbl">capitais com alto IDH = maior penetração</div></div>
+      <div class="ncard"><div class="val">A e B</div><div class="lbl">classes-alvo no mercado brasileiro</div></div>
+    </div>
+    <div class="slabel">Argumentos principais</div>
+    <div class="card">
+      <h3>Estabilidade política dos EAU — vantagem</h3>
+      <ul>
+        <li>Os Emirados têm uma das economias mais estáveis e abertas ao comércio do mundo</li>
+        <li>Risco-país baixo = seguro de carga mais barato e prazos previsíveis</li>
+        <li>Menos risco na negociação com o fornecedor árabe</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Ausência de acordo comercial — ponto de atenção</h3>
+      <ul>
+        <li>Brasil <strong>não tem acordo preferencial</strong> com os EAU (diferente do Mercosul)</li>
+        <li>Sem desconto de tarifa — importador paga a alíquota cheia</li>
+        <li>Esse custo extra precisa ser embutido no preço final ao consumidor</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Segmentação social — quem é o comprador</h3>
+      <ul>
+        <li>Renda, classe social e IDH da cidade definem quem acessa o produto</li>
+        <li>Capitais com alto IDH: São Paulo, Curitiba, Florianópolis, Brasília</li>
+        <li>Nicho de perfumes orientais é específico no Brasil, mas <strong>crescendo rápido</strong></li>
+      </ul>
+    </div>
+    <div class="hl">
+      <div class="hl-tag">⚡ Argumento forte</div>
+      <p>Estabilidade política afeta diretamente o custo do seguro e a previsibilidade dos prazos. Como os EAU são estáveis, o importador tem <strong>segurança operacional real</strong> — diferencial claro frente a fornecedores de países instáveis.</p>
+    </div>
+  </div>
+
+  <div class="panel t-eco" data-i="2">
+    <div class="slabel">Números que você precisa saber</div>
+    <div class="nums">
+      <div class="ncard"><div class="val">Alta</div><div class="lbl">carga tributária sobre importados no Brasil</div></div>
+      <div class="ncard"><div class="val">USD</div><div class="lbl">câmbio de referência (dirham atrelado ao dólar)</div></div>
+      <div class="ncard"><div class="val">3x</div><div class="lbl">e-commerce cresce mais que lojas físicas</div></div>
+      <div class="ncard"><div class="val">Premium</div><div class="lbl">reposicionamento necessário no Brasil</div></div>
+    </div>
+    <div class="slabel">Argumentos principais</div>
+    <div class="card">
+      <h3>Poder de compra e reposicionamento</h3>
+      <ul>
+        <li>Nos EAU o Marj é produto acessível — renda alta e forte cultura de fragrâncias</li>
+        <li>No Brasil, renda menor e desigualdade maior: produto vira <strong>item premium ou de luxo</strong></li>
+        <li>Isso não é desvantagem — é estratégia: brasileiro paga mais por exclusividade</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Taxa de câmbio — risco real</h3>
+      <ul>
+        <li>O dirham (AED) é atrelado ao dólar — custo da importação sobe com o USD</li>
+        <li>Dólar alto encarece o perfume; dólar baixo melhora acessibilidade</li>
+        <li>Estratégia: <strong>hedge cambial</strong> para estabilizar o custo de importação</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tributação e concorrência</h3>
+      <ul>
+        <li>Brasil: altíssima carga sobre importados — <strong>II + IPI + PIS/COFINS + ICMS</strong></li>
+        <li>Concorrência direta: Lattafa, Armaf e marcas nacionais premium</li>
+        <li>Concorrência indireta: eletrônicos, roupas e lazer disputam a mesma renda</li>
+      </ul>
+    </div>
+    <div class="hl">
+      <div class="hl-tag">⚡ Curiosidade para usar</div>
+      <p>A inflação faz o consumidor brasileiro priorizar datas específicas. <strong>Dia das Mães, Natal e Dia dos Namorados</strong> são os picos de venda de perfumes importados — estoque e campanhas precisam ser planejados sazonalmente.</p>
+    </div>
+  </div>
+
+  <div class="panel t-cul" data-i="3">
+    <div class="slabel">Números que você precisa saber</div>
+    <div class="nums">
+      <div class="ncard"><div class="val">Status</div><div class="lbl">perfume como identidade no Oriente Médio</div></div>
+      <div class="ncard"><div class="val">Gen Z</div><div class="lbl">principal motor de crescimento árabe no Brasil</div></div>
+      <div class="ncard"><div class="val">Leve</div><div class="lbl">fragrância preferida pelo brasileiro em geral</div></div>
+      <div class="ncard"><div class="val">TikTok</div><div class="lbl">canal principal de descoberta de marcas árabes</div></div>
+    </div>
+    <div class="slabel">Argumentos principais</div>
+    <div class="card">
+      <h3>A diferença cultural central</h3>
+      <ul>
+        <li>Oriente Médio: perfume é parte da <strong>identidade e religião</strong> — estar bem perfumado é norma social</li>
+        <li>Brasil: uso ligado à higiene e ocasiões sociais, preferência por fragrâncias <strong>leves e frescas</strong></li>
+        <li>O Marj atinge um nicho específico no Brasil — mas está crescendo rapidamente</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Comparativo rápido — OM vs Brasil</h3>
+      <ul>
+        <li><strong>Costumes:</strong> OM liga à religião | BR liga à higiene e status social</li>
+        <li><strong>Negociação:</strong> OM foca em relacionamento | BR mistura relacional com objetividade</li>
+        <li><strong>E-commerce:</strong> OM prefere loja física | BR fortíssimo em redes sociais</li>
+        <li><strong>Comunicação:</strong> OM árabe/inglês e luxo | BR português descontraído e emocional</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Estratégia de adaptação cultural</h3>
+      <ul>
+        <li>Comunicação em português com tom emocional — diferente do árabe sofisticado dos EAU</li>
+        <li>Posicionar oud e âmbar como experiência de sofisticação, não uso cotidiano</li>
+        <li>Associar ao uso noturno, ocasiões especiais e ao universo do luxo acessível</li>
+      </ul>
+    </div>
+    <div class="hl">
+      <div class="hl-tag">⚡ Curiosidade forte</div>
+      <p>A Geração Z descobre marcas árabes pelo <strong>TikTok e Instagram</strong>. Um frasco diferente e uma história de origem árabe já são diferenciais de venda — o exótico vira argumento de compra para esse público.</p>
+    </div>
+  </div>
+
+  <div class="panel t-tec" data-i="4">
+    <div class="slabel">Números que você precisa saber</div>
+    <div class="nums">
+      <div class="ncard"><div class="val">ANVISA</div><div class="lbl">órgão regulador de cosméticos no Brasil</div></div>
+      <div class="ncard"><div class="val">AFE</div><div class="lbl">Autorização obrigatória para importar cosméticos</div></div>
+      <div class="ncard"><div class="val">Halal</div><div class="lbl">certificação-chave do produto árabe</div></div>
+      <div class="ncard"><div class="val">Siscomex</div><div class="lbl">sistema de registro de importações no Brasil</div></div>
+    </div>
+    <div class="slabel">Argumentos principais</div>
+    <div class="card">
+      <h3>Regulamentação técnica — ANVISA</h3>
+      <ul>
+        <li>Perfumes são cosméticos e seguem as normas da ANVISA para entrar no Brasil</li>
+        <li>Importadora precisa ter a <strong>AFE</strong> emitida pela ANVISA — sem ela a importação é ilegal</li>
+        <li>Produto passa por testes de qualidade e segurança antes de ser comercializado</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Certificações do lado árabe</h3>
+      <ul>
+        <li><strong>Certificação Halal:</strong> garante ausência de ingredientes proibidos</li>
+        <li><strong>Certificação Sanitária Internacional:</strong> comprova padrões internacionais de qualidade</li>
+        <li><strong>Certificado de Origem Não Preferencial:</strong> comprova fabricação nos EAU — exigido pela Receita Federal</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Design e embalagem como fator técnico</h3>
+      <ul>
+        <li>Embalagem influencia diretamente a decisão de compra no Brasil — frascos elegantes são diferenciais</li>
+        <li>Perfumes árabes já investem em design sofisticado — ponto a favor do Marj</li>
+        <li>Vedação, indicador de nível e ergonomia do frasco são valorizados nos dois mercados</li>
+      </ul>
+    </div>
+    <div class="hl">
+      <div class="hl-tag">⚡ Argumento técnico para usar</div>
+      <p>O <strong>Siscomex</strong> é o sistema eletrônico da Receita Federal que registra todas as importações. Operadores especializados em cosméticos dominam esse sistema e reduzem o risco de atrasos e apreensões na aduana.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+
+  function activate(idx) {
+    tabs.forEach(function (t) { t.classList.remove('active'); });
+    panels.forEach(function (p) { p.classList.remove('active'); });
+    tabs[idx].classList.add('active');
+    panels[idx].classList.add('active');
+    tabs[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    window.scrollTo(0, 0);
+  }
+
+  tabs.forEach(function (tab, idx) {
+    tab.addEventListener('click', function () { activate(idx); });
+    tab.addEventListener('touchend', function (e) { e.preventDefault(); activate(idx); });
+  });
+}());
+</script>
+
+</body>
+</html>
