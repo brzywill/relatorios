@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatorio Semanal | Cromit Moveis</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --meta: #0082fb;
+  --google: #FBBC05;
+  --resumo: #1E3A8A;
+  --meta-light: #EAF4FF;
+  --google-light: #FFF8DB;
+  --resumo-light: #E8EEFF;
+  --ink: #1a1a2e;
+  --ink-mid: #64748B;
+  --ink-dim: #94A3B8;
+  --border: #F0F2F8;
+  --bg: #F7F8FA;
+  --white: #ffffff;
+  --green: #15803D;
+  --green-bg: #DCFCE7;
+  --red: #DC2626;
+  --red-bg: #FEE2E2;
+  --amber: #92660A;
+  --amber-bg: #FEF3C7;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; font-size: 13px; }
+.header { background: var(--ink); padding: 18px 36px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header-title { color: #fff; font-size: 18px; font-weight: 800; }
+.header-sub { color: rgba(255,255,255,0.45); font-size: 11px; font-weight: 500; margin-top: 4px; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.badge-semanal { background: var(--meta); color: #fff; border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+.badge-periodo { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 600; }
+.header-pdf { background: #fff; color: var(--ink); border: 0; border-radius: 20px; padding: 5px 14px; font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+.tabs-wrapper { background: var(--white); border-bottom: 2px solid var(--border); padding: 0 36px; display: flex; overflow-x: auto; }
+.tab { padding: 14px 22px; font-size: 12px; font-weight: 700; color: var(--ink-dim); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 7px; }
+.tab::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #CBD5E1; flex-shrink: 0; }
+.tab:hover { color: var(--ink); }
+.tab.tab-meta.active { color: var(--meta); border-bottom-color: var(--meta); }
+.tab.tab-google.active { color: var(--google); border-bottom-color: var(--google); }
+.tab.tab-resumo.active { color: var(--resumo); border-bottom-color: var(--resumo); }
+.tab.tab-meta::before { background: var(--meta); }
+.tab.tab-google::before { background: var(--google); }
+.tab.tab-resumo::before { background: var(--resumo); }
+.panel { display: none; }
+.panel.active { display: block; }
+.content { padding: 28px 36px; max-width: 1200px; margin: 0 auto; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.platform-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+.platform-badge.meta { background: var(--meta-light); color: var(--meta); }
+.platform-badge.google { background: var(--google-light); color: #9A6700; }
+.section-label { font-size: 11px; font-weight: 600; color: var(--ink-dim); margin-left: auto; }
+.hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.hero-card { background: var(--meta); border-radius: 14px; padding: 22px 20px; color: #fff; position: relative; overflow: hidden; }
+.hero-card::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.07); border-radius: 50%; }
+.hero-card.dark { background: var(--ink); }
+.hero-card.google { background: var(--google); color: var(--ink); }
+.hero-card.google .hero-delta { background: rgba(0,0,0,0.12); color: var(--ink); }
+.hero-card.google .hero-sub { color: rgba(0,0,0,0.72); }
+.hero-label { font-size: 10px; font-weight: 700; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+.hero-value { font-size: 28px; font-weight: 800; line-height: 1; }
+.hero-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 3px 9px; margin-top: 8px; }
+.hero-sub { font-size: 11px; opacity: 0.65; margin-top: 6px; font-weight: 500; line-height: 1.5; }
+.kpi-grid, .metrics-extra-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.metrics-extra-grid { grid-template-columns: repeat(3, 1fr); }
+.kpi, .metric-extra-card, .card, .insight-card, .camp-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.kpi { padding: 18px 16px; transition: box-shadow 0.2s; }
+.kpi:hover { box-shadow: var(--shadow-md); }
+.kpi.highlight { border-top: 3px solid var(--meta); }
+.kpi.google-highlight { border-top: 3px solid var(--google); }
+.kpi-label, .metric-extra-label, .camp-metric-label { font-size: 10px; font-weight: 700; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 8px; }
+.kpi-value, .metric-extra-value, .camp-metric-value { font-size: 20px; font-weight: 800; color: var(--ink); line-height: 1; }
+.kpi-delta { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; margin-top: 8px; }
+.kpi-delta.up { background: var(--green-bg); color: var(--green); }
+.kpi-delta.down { background: var(--red-bg); color: var(--red); }
+.kpi-delta.neutral { background: var(--amber-bg); color: var(--amber); }
+.metric-extra-card { padding: 16px; }
+.metric-extra-delta { font-size: 11px; font-weight: 600; color: var(--ink-dim); margin-top: 4px; }
+.metric-extra-delta span.up { color: var(--green); }
+.metric-extra-delta span.down { color: var(--red); }
+.card { padding: 22px; margin-bottom: 20px; }
+.card-title { font-size: 11px; font-weight: 700; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+.comp-table { width: 100%; border-collapse: collapse; }
+.comp-table th { font-size: 10px; font-weight: 700; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.7px; padding-bottom: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.comp-table td { padding: 11px 8px 11px 0; font-size: 12px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td { border-bottom: none; }
+.comp-table td:first-child { color: var(--ink-mid); font-weight: 500; }
+.comp-table td.num { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.badge { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+.badge.good { background: var(--green-bg); color: var(--green); }
+.badge.bad { background: var(--red-bg); color: var(--red); }
+.badge.neutral { background: var(--amber-bg); color: var(--amber); }
+.camp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.camp-card { padding: 20px; border-top: 3px solid var(--meta); }
+.camp-card.google { border-top-color: var(--google); }
+.camp-obj-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ink-dim); background: var(--bg); border-radius: 20px; padding: 4px 10px; margin-bottom: 8px; }
+.camp-name { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 14px; line-height: 1.4; }
+.camp-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.camp-metric { display: flex; flex-direction: column; gap: 2px; }
+.camp-metric-value { font-size: 16px; }
+.insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.insight-card { padding: 20px; }
+.insight-card.full { grid-column: 1 / -1; }
+.insight-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+.insight-title.pos { color: var(--green); }
+.insight-title.neg { color: var(--red); }
+.insight-title.blue { color: var(--resumo); }
+.insight-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.insight-icon.pos { background: var(--green-bg); }
+.insight-icon.neg { background: var(--red-bg); }
+.insight-icon.blue { background: var(--resumo-light); }
+.insight-item { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+.insight-item:last-child { margin-bottom: 0; }
+.insight-num { width: 20px; height: 20px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--ink-dim); flex-shrink: 0; }
+.insight-text { font-size: 12px; font-weight: 500; color: #444; line-height: 1.55; }
+.footer { text-align: center; padding: 24px; font-size: 11px; color: var(--ink-dim); font-weight: 500; border-top: 1px solid var(--border); margin-top: 40px; background: var(--white); }
+@page { size: A4 portrait; margin: 10mm; }
+@media print {
+  body { background: #fff; }
+  .header { position: static; }
+  .header-pdf { display: none !important; }
+  .panel { display: block !important; break-before: page; }
+  #panel-meta { break-before: auto; }
+  .content { max-width: none; padding: 20px 0; }
+  .hero-grid, .kpi-grid, .metrics-extra-grid, .insights-grid, .camp-grid { break-inside: avoid; }
+  .hero-card, .kpi, .metric-extra-card, .card, .insight-card, .camp-card { break-inside: avoid; box-shadow: none; }
+  .footer { margin-top: 12px; }
+}
+@media (max-width: 900px) {
+  .hero-grid, .kpi-grid, .metrics-extra-grid, .insights-grid { grid-template-columns: 1fr; }
+  .content { padding: 20px 16px; }
+  .header { padding: 14px 16px; }
+  .tabs-wrapper { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">Cromit Moveis</div>
+    <div class="header-sub">Relatorio Semanal - 12/04 a 19/04 de 2026</div>
+  </div>
+  <div class="header-right">
+    <div class="badge-semanal">SEMANAL</div>
+    <div class="badge-periodo">12/04-19/04</div>
+    <button class="header-pdf" type="button" onclick="exportPDF()">pdf</button>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <div class="tab tab-meta active" onclick="switchTab('meta', this)">Meta Ads</div>
+  <div class="tab tab-google" onclick="switchTab('google', this)">Google Ads</div>
+  <div class="tab tab-resumo" onclick="switchTab('resumo', this)">Resumo</div>
+</div>
+
+<div class="panel active" id="panel-meta">
+  <div class="content">
+    <div class="section-header">
+      <div class="platform-badge meta">Meta Ads</div>
+      <span class="section-label">12/04 a 19/04 vs 05/04 a 12/04</span>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero-card">
+        <div class="hero-label">Conversas</div>
+        <div class="hero-value">116</div>
+        <div class="hero-delta">-3,3% vs semana ant.</div>
+        <div class="hero-sub">Resultado do bloco de mensagens, incluindo o novo conjunto de leads da semana.</div>
+      </div>
+      <div class="hero-card dark">
+        <div class="hero-label">Seguidores</div>
+        <div class="hero-value">98</div>
+        <div class="hero-delta">+27,3% vs semana ant.</div>
+        <div class="hero-sub">Resultado do bloco de audiencia, sem misturar com campanhas de mensagens.</div>
+      </div>
+      <div class="hero-card dark">
+        <div class="hero-label">Investimento Meta</div>
+        <div class="hero-value">R$ 436,04</div>
+        <div class="hero-delta">-20,1% vs semana ant.</div>
+        <div class="hero-sub">A conta reduziu investimento total e mesmo assim melhorou eficiencia no Meta.</div>
+      </div>
+    </div>
+
+    <div class="card-title">Metricas da Semana (Meta)</div>
+    <div class="kpi-grid">
+      <div class="kpi highlight">
+        <div class="kpi-label">Custo / Conversa</div>
+        <div class="kpi-value">R$ 2,80</div>
+        <div class="kpi-delta up">-12,4%</div>
+      </div>
+      <div class="kpi highlight">
+        <div class="kpi-label">Custo / Seguidor</div>
+        <div class="kpi-value">R$ 0,83</div>
+        <div class="kpi-delta up">-49,7%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Visitas</div>
+        <div class="kpi-value">452</div>
+        <div class="kpi-delta up">+1,3%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">CTR Geral</div>
+        <div class="kpi-value">1,75%</div>
+        <div class="kpi-delta up">+18,4%</div>
+      </div>
+    </div>
+
+    <div class="card-title">Eficiencia (Meta)</div>
+    <div class="metrics-extra-grid">
+      <div class="metric-extra-card">
+        <div class="metric-extra-label">CPC Medio</div>
+        <div class="metric-extra-value">R$ 0,63</div>
+        <div class="metric-extra-delta"><span class="up">-16,0%</span> vs semana anterior</div>
+      </div>
+      <div class="metric-extra-card">
+        <div class="metric-extra-label">CPM Medio</div>
+        <div class="metric-extra-value">R$ 10,95</div>
+        <div class="metric-extra-delta"><span class="up">-0,5%</span> vs semana anterior</div>
+      </div>
+      <div class="metric-extra-card">
+        <div class="metric-extra-label">ThruPlay</div>
+        <div class="metric-extra-value">828</div>
+        <div class="metric-extra-delta"><span class="down">-10,6%</span> volume da campanha de video</div>
+      </div>
+    </div>
+
+    <div class="camp-grid">
+      <div class="camp-card">
+        <div class="camp-obj-badge">Mensagens</div>
+        <div class="camp-name">[ERICK][ENGAJAMENTO][WHATSAPP][ABO] + leads</div>
+        <div class="camp-metrics">
+          <div class="camp-metric"><span class="camp-metric-label">Conversas</span><span class="camp-metric-value">116</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Investimento</span><span class="camp-metric-value">R$ 325,28</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Custo / Conversa</span><span class="camp-metric-value">R$ 2,80</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Cliques</span><span class="camp-metric-value">261</span></div>
+        </div>
+      </div>
+      <div class="camp-card">
+        <div class="camp-obj-badge">Trafego / Audiencia</div>
+        <div class="camp-name">[ERICK][TRAFEGO][AUDIENCIA]</div>
+        <div class="camp-metrics">
+          <div class="camp-metric"><span class="camp-metric-label">Visitas</span><span class="camp-metric-value">452</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Seguidores</span><span class="camp-metric-value">98</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Custo / Seguidor</span><span class="camp-metric-value">R$ 0,83</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Investimento</span><span class="camp-metric-value">R$ 81,13</span></div>
+        </div>
+      </div>
+      <div class="camp-card">
+        <div class="camp-obj-badge">Video</div>
+        <div class="camp-name">[ENGAJAMENTO][VIDEO VIEW]</div>
+        <div class="camp-metrics">
+          <div class="camp-metric"><span class="camp-metric-label">ThruPlay</span><span class="camp-metric-value">828</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Investimento</span><span class="camp-metric-value">R$ 29,63</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Alcance</span><span class="camp-metric-value">2.520</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Impressoes</span><span class="camp-metric-value">2.674</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Comparativo Meta</div>
+      <table class="comp-table">
+        <thead>
+          <tr><th>Metrica</th><th>Semana Anterior</th><th>Semana Atual</th><th>Var.</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Investimento total</td><td class="num">R$ 545,67</td><td class="num">R$ 436,04</td><td><span class="badge neutral">-20,1%</span></td></tr>
+          <tr><td>Conversas</td><td class="num">120</td><td class="num">116</td><td><span class="badge bad">-3,3%</span></td></tr>
+          <tr><td>Custo / Conversa</td><td class="num">R$ 3,20</td><td class="num">R$ 2,80</td><td><span class="badge good">-12,4%</span></td></tr>
+          <tr><td>Seguidores</td><td class="num">77</td><td class="num">98</td><td><span class="badge good">+27,3%</span></td></tr>
+          <tr><td>Custo / Seguidor</td><td class="num">R$ 1,64</td><td class="num">R$ 0,83</td><td><span class="badge good">-49,7%</span></td></tr>
+          <tr><td>Visitas</td><td class="num">446</td><td class="num">452</td><td><span class="badge neutral">+1,3%</span></td></tr>
+          <tr><td>CTR geral</td><td class="num">1,48%</td><td class="num">1,75%</td><td><span class="badge good">+18,4%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-google">
+  <div class="content">
+    <div class="section-header">
+      <div class="platform-badge google">Google Ads</div>
+      <span class="section-label">12/04 a 19/04 vs 05/04 a 12/04</span>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero-card google">
+        <div class="hero-label">Conversoes</div>
+        <div class="hero-value">11,00</div>
+        <div class="hero-delta">-42,5% vs semana ant.</div>
+        <div class="hero-sub">A campanha de Pesquisa perdeu volume de conversao na semana atual.</div>
+      </div>
+      <div class="hero-card dark">
+        <div class="hero-label">Investimento</div>
+        <div class="hero-value">R$ 347,94</div>
+        <div class="hero-delta">+18,7% vs semana ant.</div>
+        <div class="hero-sub">O Google Ads ficou mais caro mesmo entregando menos conversoes.</div>
+      </div>
+      <div class="hero-card dark">
+        <div class="hero-label">Custo / Conversao</div>
+        <div class="hero-value">R$ 31,63</div>
+        <div class="hero-delta">+106,5% vs semana ant.</div>
+        <div class="hero-sub">A eficiencia de conversao piorou com clareza nesta semana.</div>
+      </div>
+    </div>
+
+    <div class="card-title">Metricas da Semana (Google)</div>
+    <div class="kpi-grid">
+      <div class="kpi google-highlight">
+        <div class="kpi-label">Cliques</div>
+        <div class="kpi-value">549</div>
+        <div class="kpi-delta down">-22,1%</div>
+      </div>
+      <div class="kpi google-highlight">
+        <div class="kpi-label">Impressoes</div>
+        <div class="kpi-value">21.037</div>
+        <div class="kpi-delta neutral">+0,8%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">CTR</div>
+        <div class="kpi-value">2,61%</div>
+        <div class="kpi-delta down">-22,8%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Taxa de Conversao</div>
+        <div class="kpi-value">2,00%</div>
+        <div class="kpi-delta down">-26,5%</div>
+      </div>
+    </div>
+
+    <div class="card-title">Eficiencia (Google)</div>
+    <div class="metrics-extra-grid">
+      <div class="metric-extra-card">
+        <div class="metric-extra-label">CPC Medio</div>
+        <div class="metric-extra-value">R$ 0,63</div>
+        <div class="metric-extra-delta"><span class="down">+50,0%</span> vs semana anterior</div>
+      </div>
+      <div class="metric-extra-card">
+        <div class="metric-extra-label">Custo / Conversao</div>
+        <div class="metric-extra-value">R$ 31,63</div>
+        <div class="metric-extra-delta"><span class="down">+106,5%</span> vs semana anterior</div>
+      </div>
+      <div class="metric-extra-card">
+        <div class="metric-extra-label">Conversoes</div>
+        <div class="metric-extra-value">11,00</div>
+        <div class="metric-extra-delta"><span class="down">-42,5%</span> volume semanal</div>
+      </div>
+    </div>
+
+    <div class="camp-grid">
+      <div class="camp-card google">
+        <div class="camp-obj-badge">Pesquisa</div>
+        <div class="camp-name">Search | Cromit</div>
+        <div class="camp-metrics">
+          <div class="camp-metric"><span class="camp-metric-label">Cliques</span><span class="camp-metric-value">549</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Impressoes</span><span class="camp-metric-value">21.037</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Conversoes</span><span class="camp-metric-value">11,00</span></div>
+          <div class="camp-metric"><span class="camp-metric-label">Custo</span><span class="camp-metric-value">R$ 347,94</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Comparativo Google</div>
+      <table class="comp-table">
+        <thead>
+          <tr><th>Metrica</th><th>Semana Anterior</th><th>Semana Atual</th><th>Var.</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Investimento</td><td class="num">R$ 293,36</td><td class="num">R$ 347,94</td><td><span class="badge neutral">+18,7%</span></td></tr>
+          <tr><td>Cliques</td><td class="num">705</td><td class="num">549</td><td><span class="badge bad">-22,1%</span></td></tr>
+          <tr><td>Impressoes</td><td class="num">20.871</td><td class="num">21.037</td><td><span class="badge neutral">+0,8%</span></td></tr>
+          <tr><td>CTR</td><td class="num">3,38%</td><td class="num">2,61%</td><td><span class="badge bad">-22,8%</span></td></tr>
+          <tr><td>CPC Medio</td><td class="num">R$ 0,42</td><td class="num">R$ 0,63</td><td><span class="badge bad">+50,0%</span></td></tr>
+          <tr><td>Conversoes</td><td class="num">19,14</td><td class="num">11,00</td><td><span class="badge bad">-42,5%</span></td></tr>
+          <tr><td>Custo / Conversao</td><td class="num">R$ 15,32</td><td class="num">R$ 31,63</td><td><span class="badge bad">+106,5%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-resumo">
+  <div class="content">
+    <div class="insights-grid">
+      <div class="insight-card">
+        <div class="insight-title pos"><div class="insight-icon pos">↑</div>Pontos Positivos</div>
+        <div class="insight-item"><div class="insight-num">1</div><div class="insight-text">No Meta Ads, a conta ficou mais eficiente: custo por conversa caiu e o custo por seguidor despencou para R$ 0,83.</div></div>
+        <div class="insight-item"><div class="insight-num">2</div><div class="insight-text">A audiencia entregou mais seguidores e um pouco mais de visitas mesmo com menos investimento total.</div></div>
+        <div class="insight-item"><div class="insight-num">3</div><div class="insight-text">O CTR geral do Meta subiu, mostrando melhora da resposta dos anuncios.</div></div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-title neg"><div class="insight-icon neg">!</div>Pontos de Atencao</div>
+        <div class="insight-item"><div class="insight-num">1</div><div class="insight-text">No Google Ads, as conversoes caíram de 19,14 para 11,00 e o custo por conversao mais do que dobrou.</div></div>
+        <div class="insight-item"><div class="insight-num">2</div><div class="insight-text">O volume de conversas no Meta caiu levemente, então vale acompanhar se a melhora de eficiencia se sustenta com esse ritmo.</div></div>
+        <div class="insight-item"><div class="insight-num">3</div><div class="insight-text">A campanha de video perdeu volume de ThruPlay, o que pode reduzir apoio de alcance no topo da conta.</div></div>
+      </div>
+
+      <div class="insight-card full">
+        <div class="insight-title blue"><div class="insight-icon blue">-></div>Proximos Passos</div>
+        <div class="insight-item"><div class="insight-num">1</div><div class="insight-text">Manter a estrutura do Meta Ads, reforcando os conjuntos de audiencia e mensagens que estao mais eficientes.</div></div>
+        <div class="insight-item"><div class="insight-num">2</div><div class="insight-text">Revisar a campanha de Pesquisa no Google Ads para recuperar conversoes e conter o aumento do custo por conversao.</div></div>
+        <div class="insight-item"><div class="insight-num">3</div><div class="insight-text">Acompanhar a proxima semana para validar se a melhora do Meta compensa a piora do Google no resultado geral da conta.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Relatorio Semanal - 12/04 a 19/04 de 2026 - Cromit Moveis</div>
+
+<script>
+function switchTab(tab, element) {
+  document.querySelectorAll('.panel').forEach(function(panel) { panel.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(button) { button.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  element.classList.add('active');
+}
+function exportPDF() {
+  var button = document.querySelector('.header-pdf');
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'abrindo...';
+  }
+  setTimeout(function() { window.print(); }, 50);
+}
+window.addEventListener('afterprint', function() {
+  var button = document.querySelector('.header-pdf');
+  if (button) {
+    button.disabled = false;
+    button.textContent = 'pdf';
+  }
+});
+</script>
+
+</body>
+</html>
