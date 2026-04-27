@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatorio Semanal | LB BRAND</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --meta: #0082fb;
+  --meta-dark: #0458a8;
+  --meta-light: #EAF4FF;
+  --resumo: #1E3A8A;
+  --resumo-light: #E8EEFF;
+  --ink: #151529;
+  --muted: #64748B;
+  --soft: #94A3B8;
+  --border: #EEF1F6;
+  --bg: #F6F8FB;
+  --white: #fff;
+  --green: #15803D;
+  --green-bg: #DCFCE7;
+  --red: #DC2626;
+  --red-bg: #FEE2E2;
+  --amber: #8A5B00;
+  --amber-bg: #FEF3C7;
+  --neutral: #475569;
+  --neutral-bg: #E2E8F0;
+  --shadow: 0 1px 3px rgba(15, 23, 42, .08), 0 8px 24px rgba(15, 23, 42, .04);
+  --radius: 14px;
+}
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { min-height: 100vh; background: var(--bg); color: var(--ink); font-family: "Montserrat", sans-serif; font-size: 13px; }
+.header { position: sticky; top: 0; z-index: 20; background: var(--ink); padding: 18px 36px; display: flex; align-items: center; justify-content: space-between; }
+.header-left { display: flex; align-items: center; gap: 14px; }
+.initials { width: 42px; height: 42px; border-radius: 13px; background: linear-gradient(135deg, var(--meta), #55B6FF); color: #fff; display: grid; place-items: center; font-weight: 800; letter-spacing: .5px; }
+.header h1 { color: #fff; font-size: 18px; font-weight: 800; }
+.header p { color: rgba(255,255,255,.48); font-size: 11px; margin-top: 4px; font-weight: 600; }
+.header-right { display: flex; gap: 10px; align-items: center; }
+.pill { border-radius: 999px; padding: 6px 14px; font-size: 11px; font-weight: 800; }
+.pill.meta { background: var(--meta); color: #fff; }
+.pill.period { background: rgba(255,255,255,.08); color: rgba(255,255,255,.68); border: 1px solid rgba(255,255,255,.12); }
+.pdf { border: 0; background: #fff; color: var(--ink); cursor: pointer; }
+.tabs { background: var(--white); padding: 0 36px; display: flex; border-bottom: 2px solid var(--border); overflow-x: auto; }
+.tab { border: 0; background: none; font: inherit; display: flex; align-items: center; gap: 8px; padding: 14px 22px; margin-bottom: -2px; border-bottom: 2px solid transparent; color: var(--soft); font-size: 12px; font-weight: 700; cursor: pointer; transition: color .2s, border-color .2s; white-space: nowrap; }
+.tab::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--soft); }
+.tab.meta::before { background: var(--meta); }
+.tab.resumo::before { background: var(--resumo); }
+.tab:hover { color: var(--ink); }
+.tab.active.meta { color: var(--meta); border-bottom-color: var(--meta); }
+.tab.active.resumo { color: var(--resumo); border-bottom-color: var(--resumo); }
+.panel { display: none; }
+.panel.active { display: block; }
+.content { max-width: 1220px; margin: 0 auto; padding: 28px 36px 44px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.platform { display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; background: var(--meta-light); color: var(--meta-dark); padding: 8px 14px; font-size: 12px; font-weight: 800; }
+.date-label { margin-left: auto; color: var(--soft); font-size: 11px; font-weight: 700; }
+.hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 22px; }
+.hero { position: relative; overflow: hidden; border-radius: 16px; padding: 22px; color: #fff; background: linear-gradient(135deg, var(--meta), #0059B8); min-height: 142px; }
+.hero.dark { background: linear-gradient(135deg, var(--ink), #28324A); }
+.hero.light { background: linear-gradient(135deg, #F8FAFC, #EAF4FF); color: var(--ink); border: 1px solid var(--border); }
+.hero::after { content: ""; position: absolute; width: 120px; height: 120px; border-radius: 999px; right: -36px; top: -42px; background: rgba(255,255,255,.13); }
+.hero.light::after { background: rgba(0,130,251,.10); }
+.hero-label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; font-weight: 800; opacity: .72; margin-bottom: 10px; }
+.hero-value { font-size: 31px; line-height: 1; font-weight: 800; }
+.hero-sub { margin-top: 8px; line-height: 1.45; font-size: 11px; font-weight: 600; opacity: .75; }
+.delta { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 9px; margin-top: 10px; font-size: 10px; font-weight: 800; }
+.delta.good { background: var(--green-bg); color: var(--green); }
+.delta.bad { background: var(--red-bg); color: var(--red); }
+.delta.neutral { background: var(--neutral-bg); color: var(--neutral); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; }
+.card, .table-card, .insight { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.card { padding: 17px; }
+.card.highlight { border-top: 3px solid var(--meta); }
+.label { color: var(--soft); text-transform: uppercase; letter-spacing: .65px; font-size: 10px; font-weight: 800; margin-bottom: 8px; }
+.value { font-size: 21px; line-height: 1; font-weight: 800; }
+.note { color: var(--muted); font-size: 11px; line-height: 1.45; margin-top: 7px; font-weight: 600; }
+.table-card { overflow: hidden; margin-bottom: 22px; }
+.table-head { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.table-title { font-size: 13px; font-weight: 800; }
+.table-subtitle { color: var(--soft); font-size: 11px; font-weight: 700; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+th { color: var(--soft); font-size: 10px; text-transform: uppercase; letter-spacing: .65px; font-weight: 800; background: #FAFBFD; }
+td { font-size: 12px; font-weight: 650; color: var(--ink); }
+tr:last-child td { border-bottom: 0; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.tag { display: inline-flex; border-radius: 999px; padding: 4px 9px; font-size: 10px; font-weight: 800; }
+.tag.sales { color: #9A3412; background: #FFEDD5; }
+.tag.traffic { color: #075985; background: #E0F2FE; }
+.tag.on { color: var(--green); background: var(--green-bg); }
+.tag.off { color: var(--neutral); background: var(--neutral-bg); }
+.insights { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.insight { padding: 20px; }
+.insight.full { grid-column: 1 / -1; }
+.insight h3 { display: flex; gap: 9px; align-items: center; font-size: 11px; line-height: 1; text-transform: uppercase; letter-spacing: .9px; margin-bottom: 14px; font-weight: 800; }
+.icon { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; font-weight: 800; font-size: 12px; }
+.icon.up { background: var(--green-bg); color: var(--green); }
+.icon.alert { background: var(--amber-bg); color: var(--amber); }
+.icon.next { background: var(--resumo-light); color: var(--resumo); }
+.insight-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; }
+.insight-row:last-child { margin-bottom: 0; }
+.insight-num { width: 20px; height: 20px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--soft); font-size: 10px; font-weight: 800; flex: 0 0 auto; }
+.insight-text { color: #444; line-height: 1.55; font-size: 12px; font-weight: 500; }
+@media (max-width: 900px) {
+  .header { align-items: flex-start; gap: 14px; flex-direction: column; padding: 18px; }
+  .tabs { padding: 0 18px; overflow-x: auto; }
+  .content { padding: 22px 18px; }
+  .hero-grid, .grid-4, .grid-3, .insights { grid-template-columns: 1fr; }
+  .date-label { margin-left: 0; }
+}
+@media print {
+  .header { position: static; }
+  .pdf, .tabs { display: none !important; }
+  body { background: #fff; }
+  .panel { display: block !important; page-break-after: always; }
+  .panel:last-child { page-break-after: auto; }
+  .content { max-width: none; padding: 18px; }
+  .card, .table-card, .insight, .hero { break-inside: avoid; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="initials">LB</div>
+      <div>
+        <h1>LB BRAND</h1>
+        <p>Relatorio Semanal - Meta Ads</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="pill meta">SEMANAL</span>
+      <span class="pill period">19/04 a 26/04 de 2026</span>
+      <button class="pill pdf" onclick="window.print()">pdf</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab meta active" data-tab="meta">Meta Ads</button>
+    <button class="tab resumo" data-tab="resumo">Resumo</button>
+  </nav>
+
+  <main>
+    <section id="meta" class="panel active">
+      <div class="content">
+        <div class="section-header">
+          <div class="platform">Meta Ads</div>
+          <div class="date-label">Comparativo: 12/04-19/04 vs 19/04-26/04</div>
+        </div>
+
+        <div class="hero-grid">
+          <article class="hero">
+            <div class="hero-label">Compras no site</div>
+            <div class="hero-value">6</div>
+            <div class="delta bad">-25,0%</div>
+            <div class="hero-sub">A semana anterior registrou 8 compras. O volume caiu mesmo com maior investimento.</div>
+          </article>
+          <article class="hero dark">
+            <div class="hero-label">Valor de compra atribuido</div>
+            <div class="hero-value">R$ 1.000,05</div>
+            <div class="delta bad">-37,1%</div>
+            <div class="hero-sub">Receita atribuida reduziu em relacao aos R$ 1.589,95 da semana anterior.</div>
+          </article>
+          <article class="hero light">
+            <div class="hero-label">ROAS de vendas</div>
+            <div class="hero-value">2,21x</div>
+            <div class="delta bad">-66,3%</div>
+            <div class="hero-sub">O retorno caiu porque o investimento de vendas subiu e o valor vendido diminuiu.</div>
+          </article>
+        </div>
+
+        <div class="grid-4">
+          <article class="card highlight">
+            <div class="label">Investimento total</div>
+            <div class="value">R$ 596,80</div>
+            <div class="delta neutral">+85,5%</div>
+            <div class="note">Semana anterior: R$ 321,72.</div>
+          </article>
+          <article class="card">
+            <div class="label">Alcance</div>
+            <div class="value">64.265</div>
+            <div class="delta good">+104,2%</div>
+            <div class="note">Mais pessoas impactadas pelas campanhas.</div>
+          </article>
+          <article class="card">
+            <div class="label">Impressoes</div>
+            <div class="value">80.046</div>
+            <div class="delta good">+83,8%</div>
+            <div class="note">Semana anterior: 43.554.</div>
+          </article>
+          <article class="card">
+            <div class="label">Cliques no link</div>
+            <div class="value">2.839</div>
+            <div class="delta good">+156,2%</div>
+            <div class="note">Crescimento forte de trafego gerado.</div>
+          </article>
+        </div>
+
+        <div class="grid-4">
+          <article class="card">
+            <div class="label">CTR geral</div>
+            <div class="value">3,55%</div>
+            <div class="delta good">+39,4%</div>
+            <div class="note">Taxa de clique melhorou frente aos 2,54% anteriores.</div>
+          </article>
+          <article class="card">
+            <div class="label">CPC medio</div>
+            <div class="value">R$ 0,21</div>
+            <div class="delta good">-27,6%</div>
+            <div class="note">Clique ficou mais barato mesmo com aumento de verba.</div>
+          </article>
+          <article class="card">
+            <div class="label">CPM medio</div>
+            <div class="value">R$ 7,46</div>
+            <div class="delta neutral">+0,9%</div>
+            <div class="note">Custo por mil impressoes praticamente estavel.</div>
+          </article>
+          <article class="card">
+            <div class="label">Frequencia media</div>
+            <div class="value">1,25</div>
+            <div class="delta good">-9,5%</div>
+            <div class="note">Boa abertura de audiencia, sem saturacao alta.</div>
+          </article>
+        </div>
+
+        <div class="grid-3">
+          <article class="card highlight">
+            <div class="label">Visitas ao perfil</div>
+            <div class="value">2.257</div>
+            <div class="delta good">+170,6%</div>
+            <div class="note">Campanhas de trafego cresceram com custo por visita de R$ 0,06.</div>
+          </article>
+          <article class="card highlight">
+            <div class="label">Seguidores no Instagram</div>
+            <div class="value">566</div>
+            <div class="delta good">+301,4%</div>
+            <div class="note">Custo por seguidor caiu para R$ 1,05 no consolidado.</div>
+          </article>
+          <article class="card highlight">
+            <div class="label">Custo por seguidor</div>
+            <div class="value">R$ 1,05</div>
+            <div class="delta good">-53,8%</div>
+            <div class="note">Semana anterior: R$ 2,28.</div>
+          </article>
+        </div>
+
+        <div class="grid-4">
+          <article class="card">
+            <div class="label">Adicoes ao carrinho</div>
+            <div class="value">73</div>
+            <div class="delta good">+10,6%</div>
+            <div class="note">Semana anterior: 66.</div>
+          </article>
+          <article class="card">
+            <div class="label">Valor em carrinho</div>
+            <div class="value">R$ 12.327,54</div>
+            <div class="delta bad">-29,2%</div>
+            <div class="note">Houve mais carrinhos, mas com menor valor total atribuido.</div>
+          </article>
+          <article class="card">
+            <div class="label">Checkouts iniciados</div>
+            <div class="value">24</div>
+            <div class="delta good">+60,0%</div>
+            <div class="note">Indicador intermediario melhorou antes da compra.</div>
+          </article>
+          <article class="card">
+            <div class="label">Custo por compra</div>
+            <div class="value">R$ 75,34</div>
+            <div class="delta bad">+149,0%</div>
+            <div class="note">Semana anterior: R$ 30,26.</div>
+          </article>
+        </div>
+
+        <div class="grid-4">
+          <article class="card">
+            <div class="label">Resultados totais</div>
+            <div class="value">2.263</div>
+            <div class="delta good">+168,8%</div>
+            <div class="note">Soma dos resultados informados pelo Meta: compras e visitas ao perfil.</div>
+          </article>
+          <article class="card">
+            <div class="label">Custo por resultado</div>
+            <div class="value">R$ 0,26</div>
+            <div class="delta good">-31,0%</div>
+            <div class="note">Indicador combinado, usado apenas como leitura geral.</div>
+          </article>
+          <article class="card">
+            <div class="label">Custo por carrinho</div>
+            <div class="value">R$ 6,19</div>
+            <div class="delta bad">+68,8%</div>
+            <div class="note">Calculado sobre a verba de vendas e as 73 adicoes ao carrinho.</div>
+          </article>
+          <article class="card">
+            <div class="label">Custo por checkout</div>
+            <div class="value">R$ 18,84</div>
+            <div class="delta bad">+16,7%</div>
+            <div class="note">Semana anterior: R$ 16,14 por checkout iniciado.</div>
+          </article>
+        </div>
+
+        <div class="table-card">
+          <div class="table-head">
+            <div>
+              <div class="table-title">Comparativo geral</div>
+              <div class="table-subtitle">Todas as metricas principais extraidas dos arquivos</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Metrica</th>
+                <th class="num">12/04-19/04</th>
+                <th class="num">19/04-26/04</th>
+                <th class="num">Variacao</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Investimento total</td><td class="num">R$ 321,72</td><td class="num">R$ 596,80</td><td class="num"><span class="delta neutral">+85,5%</span></td></tr>
+              <tr><td>Alcance</td><td class="num">31.468</td><td class="num">64.265</td><td class="num"><span class="delta good">+104,2%</span></td></tr>
+              <tr><td>Impressoes</td><td class="num">43.554</td><td class="num">80.046</td><td class="num"><span class="delta good">+83,8%</span></td></tr>
+              <tr><td>Cliques no link</td><td class="num">1.108</td><td class="num">2.839</td><td class="num"><span class="delta good">+156,2%</span></td></tr>
+              <tr><td>CTR geral</td><td class="num">2,54%</td><td class="num">3,55%</td><td class="num"><span class="delta good">+39,4%</span></td></tr>
+              <tr><td>CPC medio</td><td class="num">R$ 0,29</td><td class="num">R$ 0,21</td><td class="num"><span class="delta good">-27,6%</span></td></tr>
+              <tr><td>CPM medio</td><td class="num">R$ 7,39</td><td class="num">R$ 7,46</td><td class="num"><span class="delta neutral">+0,9%</span></td></tr>
+              <tr><td>Visitas ao perfil</td><td class="num">834</td><td class="num">2.257</td><td class="num"><span class="delta good">+170,6%</span></td></tr>
+              <tr><td>Custo por visita</td><td class="num">R$ 0,10</td><td class="num">R$ 0,06</td><td class="num"><span class="delta good">-32,8%</span></td></tr>
+              <tr><td>Seguidores</td><td class="num">141</td><td class="num">566</td><td class="num"><span class="delta good">+301,4%</span></td></tr>
+              <tr><td>Custo por seguidor</td><td class="num">R$ 2,28</td><td class="num">R$ 1,05</td><td class="num"><span class="delta good">-53,8%</span></td></tr>
+              <tr><td>Resultados totais</td><td class="num">842</td><td class="num">2.263</td><td class="num"><span class="delta good">+168,8%</span></td></tr>
+              <tr><td>Custo por resultado</td><td class="num">R$ 0,38</td><td class="num">R$ 0,26</td><td class="num"><span class="delta good">-31,0%</span></td></tr>
+              <tr><td>Adicoes ao carrinho</td><td class="num">66</td><td class="num">73</td><td class="num"><span class="delta good">+10,6%</span></td></tr>
+              <tr><td>Custo por carrinho</td><td class="num">R$ 3,67</td><td class="num">R$ 6,19</td><td class="num"><span class="delta bad">+68,8%</span></td></tr>
+              <tr><td>Valor de carrinho</td><td class="num">R$ 17.404,52</td><td class="num">R$ 12.327,54</td><td class="num"><span class="delta bad">-29,2%</span></td></tr>
+              <tr><td>Checkouts iniciados</td><td class="num">15</td><td class="num">24</td><td class="num"><span class="delta good">+60,0%</span></td></tr>
+              <tr><td>Custo por checkout</td><td class="num">R$ 16,14</td><td class="num">R$ 18,84</td><td class="num"><span class="delta bad">+16,7%</span></td></tr>
+              <tr><td>Compras</td><td class="num">8</td><td class="num">6</td><td class="num"><span class="delta bad">-25,0%</span></td></tr>
+              <tr><td>Valor de compra</td><td class="num">R$ 1.589,95</td><td class="num">R$ 1.000,05</td><td class="num"><span class="delta bad">-37,1%</span></td></tr>
+              <tr><td>Custo por compra</td><td class="num">R$ 30,26</td><td class="num">R$ 75,34</td><td class="num"><span class="delta bad">+149,0%</span></td></tr>
+              <tr><td>ROAS de vendas</td><td class="num">6,57x</td><td class="num">2,21x</td><td class="num"><span class="delta bad">-66,3%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-card">
+          <div class="table-head">
+            <div>
+              <div class="table-title">Leitura por frente de campanha</div>
+              <div class="table-subtitle">Separacao logica entre vendas e trafego/audiencia</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Frente</th>
+                <th class="num">Investimento</th>
+                <th class="num">Cliques</th>
+                <th class="num">Impressoes</th>
+                <th class="num">Resultado principal</th>
+                <th class="num">Custo principal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag sales">Vendas no site</span></td>
+                <td class="num">R$ 452,05</td>
+                <td class="num">621</td>
+                <td class="num">39.414</td>
+                <td class="num">6 compras</td>
+                <td class="num">R$ 75,34 / compra</td>
+              </tr>
+              <tr>
+                <td><span class="tag traffic">Trafego / Audiencia</span></td>
+                <td class="num">R$ 144,75</td>
+                <td class="num">2.218</td>
+                <td class="num">40.632</td>
+                <td class="num">2.257 visitas</td>
+                <td class="num">R$ 0,06 / visita</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-card">
+          <div class="table-head">
+            <div>
+              <div class="table-title">Anuncios da semana atual</div>
+              <div class="table-subtitle">Principais linhas do arquivo de 19/04 a 26/04</div>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Anuncio</th>
+                <th>Status</th>
+                <th class="num">Invest.</th>
+                <th class="num">Cliques</th>
+                <th class="num">CTR</th>
+                <th class="num">Seguidores</th>
+                <th class="num">Carrinho</th>
+                <th class="num">Compras</th>
+                <th class="num">Valor compra</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="tag sales">Vendas</span></td><td>Drop brasil 2 - GOIANIA</td><td><span class="tag on">active</span></td><td class="num">R$ 188,28</td><td class="num">247</td><td class="num">2,67%</td><td class="num">25</td><td class="num">36</td><td class="num">2</td><td class="num">R$ 159,62</td></tr>
+              <tr><td><span class="tag sales">Vendas</span></td><td>Drop brasil 2 - BR</td><td><span class="tag off">not delivering</span></td><td class="num">R$ 90,34</td><td class="num">223</td><td class="num">5,78%</td><td class="num">0</td><td class="num">18</td><td class="num">1</td><td class="num">R$ 306,92</td></tr>
+              <tr><td><span class="tag sales">Vendas</span></td><td>Drop brasil 2 - DUP</td><td><span class="tag off">inactive</span></td><td class="num">R$ 88,36</td><td class="num">111</td><td class="num">2,98%</td><td class="num">0</td><td class="num">13</td><td class="num">2</td><td class="num">R$ 263,78</td></tr>
+              <tr><td><span class="tag traffic">Trafego</span></td><td>Brasil - GOIANIA</td><td><span class="tag on">active</span></td><td class="num">R$ 79,19</td><td class="num">717</td><td class="num">3,04%</td><td class="num">132</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0,00</td></tr>
+              <tr><td><span class="tag traffic">Trafego</span></td><td>Brasil - BR</td><td><span class="tag on">active</span></td><td class="num">R$ 64,24</td><td class="num">1.490</td><td class="num">8,54%</td><td class="num">408</td><td class="num">0</td><td class="num">0</td><td class="num">R$ 0,00</td></tr>
+              <tr><td><span class="tag sales">Vendas</span></td><td>Blusa Serena</td><td><span class="tag on">active</span></td><td class="num">R$ 55,95</td><td class="num">25</td><td class="num">1,20%</td><td class="num">0</td><td class="num">3</td><td class="num">1</td><td class="num">R$ 269,73</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="resumo" class="panel">
+      <div class="content">
+        <div class="insights">
+          <article class="insight">
+            <h3><span class="icon up">↑</span>Pontos Positivos</h3>
+            <div class="insight-row"><div class="insight-num">1</div><div class="insight-text">Os cliques cresceram 156,2% e o CPC medio caiu para R$ 0,21.</div></div>
+            <div class="insight-row"><div class="insight-num">2</div><div class="insight-text">As visitas ao perfil chegaram a 2.257, com custo por visita de apenas R$ 0,06.</div></div>
+            <div class="insight-row"><div class="insight-num">3</div><div class="insight-text">Seguidores tiveram grande evolucao: 566 no periodo, com custo por seguidor de R$ 1,05.</div></div>
+            <div class="insight-row"><div class="insight-num">4</div><div class="insight-text">O meio do funil evoluiu: 73 adicoes ao carrinho e 24 checkouts iniciados.</div></div>
+          </article>
+
+          <article class="insight">
+            <h3><span class="icon alert">!</span>Pontos de Atencao</h3>
+            <div class="insight-row"><div class="insight-num">1</div><div class="insight-text">Compras cairam de 8 para 6, enquanto o investimento de vendas subiu.</div></div>
+            <div class="insight-row"><div class="insight-num">2</div><div class="insight-text">O custo por compra aumentou para R$ 75,34, acima dos R$ 30,26 da semana anterior.</div></div>
+            <div class="insight-row"><div class="insight-num">3</div><div class="insight-text">O ROAS caiu de 6,57x para 2,21x, indicando menor retorno sobre a verba de vendas.</div></div>
+            <div class="insight-row"><div class="insight-num">4</div><div class="insight-text">Ha bom volume de carrinho e checkout, mas a conversao final precisa melhorar.</div></div>
+          </article>
+
+          <article class="insight full">
+            <h3><span class="icon next">-&gt;</span>Proximos Passos</h3>
+            <div class="insight-row"><div class="insight-num">1</div><div class="insight-text">Priorizar os criativos e conjuntos que trazem compra com melhor custo, nao apenas clique barato.</div></div>
+            <div class="insight-row"><div class="insight-num">2</div><div class="insight-text">Revisar a jornada entre carrinho, checkout e compra para reduzir abandono.</div></div>
+            <div class="insight-row"><div class="insight-num">3</div><div class="insight-text">Manter a frente de trafego/audiencia ativa, pois ela trouxe crescimento barato de visitas e seguidores.</div></div>
+            <div class="insight-row"><div class="insight-num">4</div><div class="insight-text">Acompanhar se o aumento de seguidores tambem alimenta remarketing e vendas nas proximas semanas.</div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((item) => item.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach((panel) => panel.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(tab.dataset.tab).classList.add("active");
+  });
+});
+</script>
+</body>
+</html>
