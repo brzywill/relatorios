@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relatório Semanal · Mobgoo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f7;
+  --surface:#ffffff;
+  --border:#d2d2d7;
+  --border-light:#e8e8ed;
+  --text:#1d1d1f;
+  --muted:#6e6e73;
+  --faint:#aeaeb2;
+  --meta:#0866FF;
+  --meta-bg:#f0f4ff;
+  --google:#185EA6;
+  --google-bg:#eef3fb;
+  --green:#1a8a45;
+  --green-bg:#f0faf4;
+  --red:#cc2222;
+  --red-bg:#fff0f0;
+  --amber:#a05c00;
+  --amber-bg:#fff8ee;
+  --r:12px;
+  --sh:0 1px 0 rgba(0,0,0,.04);
+}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.hdr{background:#1d1d1f;border-bottom:1px solid #000;padding:16px 36px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.hdr-l{display:flex;align-items:center;gap:14px}
+.hdr-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#1d1d1f;background:#f5f5f7;flex-shrink:0;letter-spacing:-.5px}
+.hdr-name{font-size:15px;font-weight:700;color:#f5f5f7;line-height:1.2;letter-spacing:-.2px}
+.hdr-sub{font-size:11px;color:#86868b;margin-top:2px;font-weight:500}
+.hdr-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:4px 12px;border-radius:999px;font-size:10px;font-weight:600;border:1px solid #3a3a3c;color:#aeaeb2;background:transparent;letter-spacing:.2px}
+.shell{max-width:1200px;margin:0 auto;padding:28px 28px 64px}
+.tab-bar{border-bottom:1px solid var(--border-light);margin-top:20px}.tab-bar-inner{max-width:1200px;margin:0 auto;padding:0 28px;display:flex;gap:0}
+.tab{border:0;background:none;padding:11px 22px;font:inherit;font-size:12px;font-weight:600;letter-spacing:.2px;color:var(--muted);cursor:pointer;border-bottom:1.5px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;text-transform:uppercase;white-space:nowrap}
+.tab:hover{color:var(--text)}.tab.active{color:var(--text);border-bottom-color:var(--text)}
+.tab.active.t-meta{color:var(--meta);border-bottom-color:var(--meta)}
+.tab.active.t-google{color:var(--google);border-bottom-color:var(--google)}
+.tab.active.t-resumo{color:#6b21a8;border-bottom-color:#6b21a8}
+.panel{display:none}.panel.active{display:flex;flex-direction:column;gap:16px}
+.sec{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sec-hd{padding:14px 22px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.sec-hd h2{font-size:13px;font-weight:700;letter-spacing:-.1px}
+.sec-bd{padding:22px 22px}
+.lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--faint)}
+.chtag{display:inline-flex;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.2px}
+.chtag.meta{background:var(--meta-bg);color:var(--meta);border:1px solid #c8d9ff}
+.chtag.google{background:var(--google-bg);color:var(--google);border:1px solid #c4d6f0}
+.chtag.resumo{background:#f5f0ff;color:#6b21a8;border:1px solid #d8c8f8}
+.hg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.kpi{border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:5px;border:1px solid transparent}
+.kpi.blue{background:#1d1d1f;color:#f5f5f7;border-color:#000}
+.kpi.dark{background:#3a3a3c;color:#f5f5f7;border-color:#2c2c2e}
+.kpi .kl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:.6}
+.kpi .kv{font-size:26px;font-weight:800;line-height:1;letter-spacing:-.8px;margin-top:2px}
+.kpi .ks{font-size:11px;opacity:.5;line-height:1.5;margin-top:4px;font-weight:500}
+/* KPI hero tooltip */
+.kpi{position:relative;cursor:default}
+.kpi-tt{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#fff;color:#1d1d1f;font-size:11px;font-weight:600;line-height:1.4;padding:8px 12px;border-radius:8px;z-index:100;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.18);white-space:nowrap;border:1px solid #e5e5ea;text-align:center}
+.kpi-tt .ktt-pct{font-size:14px;font-weight:800;display:block;margin-bottom:2px}
+.kpi-tt .ktt-prev{font-size:10px;color:#6e6e73;font-weight:500}
+.kpi-tt::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#fff}
+.kpi:hover .kpi-tt{display:block}
+.mg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.mg3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.mc{border:1px solid var(--border-light);border-radius:10px;padding:15px 16px 13px;background:#fff;transition:border-color .15s}
+.mc:hover{border-color:var(--border)}
+.mc .ml{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--faint);margin-bottom:8px}
+.mc .mv{font-size:19px;font-weight:800;line-height:1;letter-spacing:-.3px;color:var(--text)}
+.mc .dl{display:inline-flex;align-items:center;gap:3px;margin-top:8px;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.2px}
+.up{background:var(--green-bg);color:var(--green)}.down{background:var(--red-bg);color:var(--red)}.same{background:var(--amber-bg);color:var(--amber)}
+.sdiv{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--faint);margin:24px 0 14px;padding-top:20px;border-top:1px solid var(--border-light)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--border)}
+th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--faint);padding:9px 12px;text-align:left}
+th.r,td.r{text-align:right}
+tbody tr{border-bottom:1px solid var(--border-light)}
+tbody tr:last-child{border:0}
+tbody tr:hover{background:#fafafa}
+td{padding:11px 12px;font-size:12px;vertical-align:middle;color:var(--text)}
+td.camp{font-weight:600;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.camp-hd{font-weight:700;font-size:11px;letter-spacing:.2px;color:var(--text);background:#f5f5f7}
+td.num{font-weight:700;font-variant-numeric:tabular-nums}
+.kwg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:20px}
+.kwc{border:1px solid var(--border-light);border-radius:10px;padding:14px;background:#fff;display:flex;flex-direction:column;gap:4px}
+.kwc.top1{border-color:#aac4e8;background:var(--google-bg)}
+.kwrk{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--faint);margin-bottom:2px}
+.kwn{font-size:12px;font-weight:700;line-height:1.4;word-break:break-word;color:var(--text)}
+.kwv{font-size:17px;font-weight:800;color:var(--google);letter-spacing:-.3px}
+.kws{font-size:10px;color:var(--muted);font-weight:500}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.ab{border:1px solid var(--border-light);border-radius:10px;padding:18px}
+.abt{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.abt em{width:5px;height:5px;border-radius:50%;display:inline-block;font-style:normal}
+.ab-pos .abt{color:var(--green)}.ab-pos .abt em{background:var(--green)}
+.ab-neg .abt{color:var(--red)}.ab-neg .abt em{background:var(--red)}
+.ab-next .abt{color:#6b21a8}.ab-next .abt em{background:#6b21a8}
+.ab ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ab li{font-size:12px;color:var(--muted);line-height:1.7;padding-left:14px;position:relative;font-weight:500}
+.ab li::before{content:'';position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%}
+.ab-pos li::before{background:var(--green)}.ab-neg li::before{background:var(--red)}.ab-next li::before{background:#6b21a8}
+.footer{text-align:center;padding:22px;font-size:10px;color:var(--faint);border-top:1px solid var(--border-light);letter-spacing:.3px;font-weight:500}
+@media(max-width:1000px){.mg{grid-template-columns:repeat(3,minmax(0,1fr))}.kwg{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.hg,.mg,.mg3,.rg{grid-template-columns:1fr 1fr}.kwg{grid-template-columns:1fr 1fr}.hdr{padding:14px 20px}.shell{padding:18px 16px 48px}}
+@media(max-width:480px){.hg,.mg,.mg3,.kwg{grid-template-columns:1fr}.rg{grid-template-columns:1fr}}
+/* CAMPAIGN CONTEXT BLOCK */
+.ctx-block{background:#fff;border:1px solid var(--border-light);border-radius:var(--r);padding:16px 20px 16px 44px;font-size:13px;color:var(--muted);line-height:1.75;font-weight:500;position:relative}
+.ctx-block::before{content:"";position:absolute;left:20px;top:16px;width:4px;height:calc(100% - 32px);background:var(--meta);border-radius:2px;min-height:20px}
+.ctx-block.ctx-google::before{background:var(--google)}
+/* METRIC CARDS GRID */
+.mc-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:4px}
+.mc-grid.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.mcard{background:#fff;border:1px solid var(--border-light);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:0;transition:border-color .15s}
+.mcard:hover{border-color:var(--border)}
+.mcard .mc-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--faint);margin-bottom:10px}
+.mcard .mc-cur{font-size:22px;font-weight:800;line-height:1;letter-spacing:-.4px;color:var(--text);font-variant-numeric:tabular-nums}
+.mcard .mc-bot{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.mcard .mc-prev{font-size:12px;font-weight:600;color:var(--faint);font-variant-numeric:tabular-nums}
+.mcard .mc-bdg{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap}
+.mc-bdg.up{background:var(--green-bg);color:var(--green)}
+.mc-bdg.down{background:var(--red-bg);color:var(--red)}
+.mc-bdg.same{background:var(--amber-bg);color:var(--amber)}
+@media(max-width:1000px){.mc-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.mc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:400px){.mc-grid{grid-template-columns:1fr}}
+/* METRIC TOOLTIP */
+.mcard{position:relative}
+.mtt{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1d1d1f;color:#f5f5f7;font-size:11px;font-weight:500;line-height:1.5;padding:8px 12px;border-radius:8px;z-index:100;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.22);max-width:220px;white-space:normal;text-align:center}
+.mtt::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1d1d1f}
+.mcard:hover .mtt{display:block}
+
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-l">
+    <img src="data:image/png;base64,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" style="height:32px;max-width:140px;object-fit:contain;display:block;flex-shrink:0" alt="logo">
+    <div><div class="hdr-name">Mobgoo</div><div class="hdr-sub">Semanal · 19/04/2026 a 26/04/2026</div></div>
+  </div>
+  <div class="hdr-pills">
+    <span class="pill">Semanal</span>
+    <span class="pill">19/04/2026 a 26/04/2026</span>
+    <span class="pill">Multi-objetivo</span>
+  </div>
+</header>
+<div class="tab-bar"><div class="tab-bar-inner">
+    <button class="tab active t-meta" data-tab="meta"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0866FF;margin-right:8px;vertical-align:middle;flex-shrink:0"></span>Meta Ads</button>
+    
+    <button class="tab t-resumo" data-tab="resumo"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#6b21a8;margin-right:8px;vertical-align:middle;flex-shrink:0"></span>Resumo</button>
+  </div></div>
+<div class="shell">
+  <div id="panel-meta" class="panel active"></div>
+  
+  <div id="panel-resumo" class="panel"></div>
+</div>
+<footer class="footer" id="footer"></footer>
+<script>
+const D={"client":"Mobgoo","slug":"mobgoo","declaredType":"Misto","profile":"Misto","reportType":"Semanal","period":"19/04/2026 a 26/04/2026","prevPeriod":"12/04/2026 a 19/04/2026","meta":{"period":"19/04/2026 a 26/04/2026","startIso":"2026-04-19","endIso":"2026-04-26","buckets":["traffic"],"breakdown":[{"campanha":"[TRAFEGO][AUDIENCIA]","nome":"[02][INSTAGRAM][SA-01][AUTO]","tipo":"visitas ao perfil do instagram","resultados":457,"spent":96.62,"cpr":0.2114223194748359,"anuncio":"[AN-06][VIDEO] Desse jeito 😂"},{"campanha":"[TRAFEGO][AUDIENCIA]","nome":"[06][FB+INSTA][SA-01][AUTO]","tipo":"visitas ao perfil e a pagina","resultados":222,"spent":60.62,"cpr":0.27306306306306305,"anuncio":"[AN-01][VIDEO] Arizona routes branca"}],"campaigns":[{"campanha":"[TRAFEGO][AUDIENCIA]","spent":157.24,"resultados":679,"conjuntos":[{"campanha":"[TRAFEGO][AUDIENCIA]","nome":"[02][INSTAGRAM][SA-01][AUTO]","tipo":"visitas ao perfil do instagram","resultados":457,"spent":96.62,"cpr":0.2114223194748359,"anuncio":"[AN-06][VIDEO] Desse jeito 😂"},{"campanha":"[TRAFEGO][AUDIENCIA]","nome":"[06][FB+INSTA][SA-01][AUTO]","tipo":"visitas ao perfil e a pagina","resultados":222,"spent":60.62,"cpr":0.27306306306306305,"anuncio":"[AN-01][VIDEO] Arizona routes branca"}]}],"bSpent":{"followers":0,"conversation":0,"traffic":156.93,"purchase":0,"engagement":0},"m":{"investimento":157.24,"alcance":22247,"impressoes":26873,"frequencia":1.2079381489639052,"cliques":575,"ctr":2.1396941167714805,"cpc":0.2734608695652174,"conversas":5,"custo_conversa":31.448,"visitas":679,"custo_visita":0.23157584683357882,"seguidores":70,"custo_seguidor":2.2462857142857144,"compras":0,"custo_compra":null,"receita":0,"roas":0,"adicoes_carrinho":0,"thruplay":0}},"metaPrev":{"period":"12/04/2026 a 19/04/2026","startIso":"2026-04-12","endIso":"2026-04-19","buckets":["traffic","conversation"],"breakdown":[{"campanha":"[TRAFEGO][AUDIENCIA]","nome":"[02][INSTAGRAM][SA-01][AUTO]","tipo":"visitas ao perfil do instagram","resultados":362,"spent":97.24999999999999,"cpr":0.26864640883977897,"anuncio":"[AN-02][VIDEO] Conheça a nova Arizona"},{"campanha":"[TRAFEGO][AUDIENCIA]","nome":"[06][FB+INSTA][SA-01][AUTO]","tipo":"visitas ao perfil e a pagina","resultados":152,"spent":39.32,"cpr":0.2586842105263158,"anuncio":"[AN-01][VIDEO] Arizona routes branca"},{"campanha":"[VENDAS][MSG]","nome":"[01][SA-01][FB+INSTA]","tipo":"conversas por mensagem iniciadas","resultados":5,"spent":14.17,"cpr":2.834,"anuncio":"[AN-03][VIDEO] Frankfurt"}],"campaigns":[{"campanha":"[TRAFEGO][AUDIENCIA]","spent":136.57,"resultados":514,"conjuntos":[{"campanha":"[TRAFEGO][AUDIENCIA]","nome":"[02][INSTAGRAM][SA-01][AUTO]","tipo":"visitas ao perfil do instagram","resultados":362,"spent":97.24999999999999,"cpr":0.26864640883977897,"anuncio":"[AN-02][VIDEO] Conheça a nova Arizona"},{"campanha":"[TRAFEGO][AUDIENCIA]","nome":"[06][FB+INSTA][SA-01][AUTO]","tipo":"visitas ao perfil e a pagina","resultados":152,"spent":39.32,"cpr":0.2586842105263158,"anuncio":"[AN-01][VIDEO] Arizona routes branca"}]},{"campanha":"[VENDAS][MSG]","spent":14.17,"resultados":5,"conjuntos":[{"campanha":"[VENDAS][MSG]","nome":"[01][SA-01][FB+INSTA]","tipo":"conversas por mensagem iniciadas","resultados":5,"spent":14.17,"cpr":2.834,"anuncio":"[AN-03][VIDEO] Frankfurt"}]}],"bSpent":{"followers":0,"conversation":10.33,"traffic":136.56999999999996,"purchase":0,"engagement":0},"m":{"investimento":150.73999999999995,"alcance":18774,"impressoes":22217,"frequencia":1.1833919250026632,"cliques":425,"ctr":1.9129495431426384,"cpc":0.35468235294117634,"conversas":5,"custo_conversa":2.834,"visitas":514,"custo_visita":0.26570038910505833,"seguidores":54,"custo_seguidor":2.529074074074074,"compras":0,"custo_compra":null,"receita":0,"roas":0,"adicoes_carrinho":0,"thruplay":0}},"google":null,"googlePrev":null,"keywords":null,"analysis":{"positivos":["A campanha [TRAFEGO][AUDIENCIA] cresceu de 514 para 679 resultados, alta de 32,1%.","A campanha [TRAFEGO][AUDIENCIA] também aumentou os seguidores de 54 para 70, crescimento de 29,6%.","O custo por resultado da campanha [TRAFEGO][AUDIENCIA] melhorou de R$ 0,27 para R$ 0,23, redução de 12,8%."],"atencao":["As conversas pelo WhatsApp caíram de 6 para 5, queda de 16,7%.","O custo por conversa subiu de R$ 25,12 para R$ 31,45, aumento de 25,2%.","A campanha [VENDAS][MSG] deixou de rodar na semana atual, saindo de 5 conversas para 0."],"proximos":["Manter a campanha [TRAFEGO][AUDIENCIA] ativa, porque ela melhorou resultados e seguidores com custo mais baixo.","Separar parte da verba de [TRAFEGO][AUDIENCIA] para WhatsApp, porque o volume de conversas caiu mesmo com o investimento total subindo de R$ 150,74 para R$ 157,24."],"contextMeta":"","contextGoogle":""},"generatedAt":"27/04/2026, 11:05:41","logoBase64":"data:image/png;base64,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"};
+const fint=v=>Number.isFinite(v)?Math.round(v).toLocaleString("pt-BR"):"—",
+      fdec=(v,d=2)=>Number.isFinite(v)?Number(v).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d}):"—",
+      fcur=v=>Number.isFinite(v)?v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}):"—",
+      fpct=(v,d=1)=>Number.isFinite(v)?Number(v).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d})+"%":"—";
+const dv=(a,b)=>b?a/b:null,delta=(c,p)=>!p?(c?null:0):((c-p)/p*100);
+function trend(k,d){if(d==null||!Number.isFinite(d)||Math.abs(d)<.05)return"same";const low=new Set(["investimento","frequencia","custo_conversa","custo_visita","custo_compra","custo_seguidor","cpc","cost","costPerConversion"]);return(low.has(k)?d<0:d>0)?"up":"down"}
+function dlab(k,c,p){const d=delta(c,p),cls=trend(k,d),ar=cls==="up"?"↑":cls==="down"?"↓":"–";return'<span class="dl '+cls+'">'+ar+' '+(d==null?"—":(d>0?"+":"")+fpct(d))+'</span>'}
+function mc(l,k,c,p,f){return'<div class="mc"><div class="ml">'+l+'</div><div class="mv">'+f(c)+'</div>'+dlab(k,c,p)+'</div>'}
+function listH(a){return a&&a.length?a.map(i=>'<li>'+i+'</li>').join(''):'<li>Nenhum item informado.</li>'}
+
+var METRIC_DESC={
+  "investimento":"Total investido no período.",
+  "alcance":"Pessoas únicas que viram seus anúncios.",
+  "impressoes":"Total de vezes que os anúncios foram exibidos.",
+  "impressions":"Total de vezes que os anúncios foram exibidos.",
+  "cliques":"Cliques totais nos anúncios.",
+  "clicks":"Cliques totais nos anúncios.",
+  "ctr":"% de pessoas que clicaram ao ver o anúncio.",
+  "cpc":"Custo médio por clique.",
+  "frequencia":"Média de vezes que a mesma pessoa viu o anúncio.",
+  "conversas":"Conversas iniciadas via WhatsApp ou Direct.",
+  "custo_conversa":"Quanto custou cada conversa iniciada.",
+  "seguidores":"Novos seguidores conquistados no período.",
+  "custo_seguidor":"Quanto custou cada novo seguidor.",
+  "visitas":"Visitas ao perfil do Instagram geradas pelos anúncios.",
+  "custo_visita":"Custo por visita ao perfil.",
+  "compras":"Compras atribuídas aos anúncios.",
+  "custo_compra":"Custo médio por compra realizada.",
+  "roas":"Retorno sobre investimento. Ex: 3x = R$3 gerados para cada R$1 investido.",
+  "receita":"Receita total atribuída aos anúncios.",
+  "adicoes_carrinho":"Produtos adicionados ao carrinho via anúncio.",
+  "thruplay":"Vídeos assistidos até o fim ou por pelo menos 15s.",
+  "cost":"Total investido no Google Ads no período.",
+  "conversions":"Ações de conversão registradas pelo Google Ads.",
+  "costPerConversion":"Custo médio por conversão.",
+  "conversionRate":"% de cliques que geraram conversão.",
+  "Investimento Meta":"Total investido no Meta Ads.",
+  "Investimento Google":"Total investido no Google Ads.",
+  "Conversas":"Conversas iniciadas via WhatsApp ou Direct.",
+  "Custo/Conversa":"Quanto custou cada conversa.",
+  "Seguidores":"Novos seguidores conquistados.",
+  "Visitas ao Perfil":"Visitas ao perfil geradas pelos anúncios.",
+  "Conversões Google":"Ações de conversão no Google Ads.",
+  "Custo/Conv. Google":"Custo médio por conversão no Google.",
+  "Custo total":"Total investido no Google Ads.",
+  "CPC médio":"Custo médio por clique no Google Ads.",
+  "Taxa de Conv.":"% de cliques convertidos.",
+  "Custo/Conv.":"Custo médio por conversão."
+};
+function metricCards(rows,cols){
+  if(!rows||!rows.length)return"";
+  // Métricas onde queda = bom (verde) e alta = ruim (vermelho)
+  var costKeys=new Set(["custo_conversa","custo_visita","custo_compra","custo_seguidor","cpc","costPerConversion","frequencia"]);
+  var costLabels=new Set(["Custo/Conversa","Custo/Compra","Custo/Seguidor","Custo/Visita","CPC médio","Custo/Conv.","Frequência"]);
+  // Métricas neutras — não colorir nem verde nem vermelho
+  var neutralKeys=new Set(["investimento","impressoes","impressions","alcance","cliques","clicks","frequencia","cost"]);
+  var neutralLabels=new Set(["Investimento","Investimento Meta","Investimento Google","Impressões","Alcance","Cliques","Frequência"]);
+  var gridCls=cols===3?"mc-grid cols3":"mc-grid";
+  var html='<div class="'+gridCls+'">';
+  rows.forEach(function(r){
+    var d=(Number.isFinite(r.prev)&&r.prev!==0)?((r.cur-r.prev)/Math.abs(r.prev)*100):null;
+    var key=r.k||"";
+    var lbl=r.label||"";
+    var isNeutral=neutralKeys.has(key)||neutralLabels.has(lbl);
+    var isCost=costKeys.has(key)||costLabels.has(lbl);
+    var cls;
+    if(d==null||Math.abs(d)<0.05)cls="same";
+    else if(isNeutral)cls="same";
+    else if(isCost)cls=d<0?"up":"down";
+    else cls=d>0?"up":"down";
+    var ar;
+    if(cls==="same"||isNeutral)ar="";
+    else if(isCost)ar=d<0?"↓ ":"↑ ";
+    else ar=d>0?"↑ ":"↓ ";
+    var dstr=d==null?"—":(d>0?"+":"")+Number(d).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
+    var tip=METRIC_DESC[key]||METRIC_DESC[lbl]||"";
+    html+='<div class="mcard">'+
+      (tip?'<div class="mtt">'+tip+'</div>':'')+
+      '<div class="mc-label">'+lbl+'</div>'+
+      '<div class="mc-cur">'+r.fmtCur+'</div>'+
+      '<div class="mc-bot">'+
+        '<span class="mc-prev">↙ '+r.fmtPrev+'</span>'+
+        '<span class="mc-bdg '+cls+'">'+ar+dstr+'</span>'+
+      '</div>'+
+    '</div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+
+
+// All non-zero meta metrics
+function metaAll(m,p){
+  return[["Conversas","conversas",fint],["Custo/Conversa","custo_conversa",fcur],["Compras","compras",fint],["Custo/Compra","custo_compra",fcur],["Seguidores","seguidores",fint],["Custo/Seguidor","custo_seguidor",fcur],["Visitas ao Perfil","visitas",fint],["Custo/Visita","custo_visita",fcur],["ROAS","roas",fdec],["Receita","receita",fcur],["Adições Carrinho","adicoes_carrinho",fint],["Thruplay","thruplay",fint]]
+  .filter(([,k])=>(Number.isFinite(m[k])&&m[k]>0)||(Number.isFinite(p[k])&&p[k]>0))
+  .map(x=>mc(x[0],x[1],m[x[1]],p[x[1]],x[2])).join("")
+}
+
+function barChart(items,color){
+  if(!items||!items.length)return"";
+  var id="bc"+Math.random().toString(36).slice(2,7);
+  var W=700,H=230,PL=0,PR=12,PT=30,PB=50;
+  var chartW=W-PL-PR,chartH=H-PT-PB,n=items.length;
+  var groupW=chartW/n;
+  var pairW=Math.min(80,groupW*0.62);
+  var bw=Math.floor(pairW/2)-3;
+  var gap=6;
+  var max=Math.max.apply(null,items.map(function(i){return Math.max(i.cur||0,i.prev||0)}).concat([1]));
+  var bars="",labels="",vals="";
+  items.forEach(function(it,i){
+    var fmt=it.fmt||fint;
+    var cx=PL+i*groupW+groupW/2;
+    var xA=cx-bw-gap/2,xP=cx+gap/2;
+    var hA=Math.max((it.cur/max)*chartH,it.cur>0?2:0);
+    var hP=Math.max((it.prev/max)*chartH,it.prev>0?2:0);
+    var yA=PT+chartH-hA,yP=PT+chartH-hP;
+    if(it.cur>0||it.prev>0)bars+="<rect x='"+xA.toFixed(1)+"' y='"+(PT).toFixed(1)+"' width='"+bw+"' height='"+chartH.toFixed(1)+"' fill='#f0f0f5' rx='3'/>";
+    if(it.cur>0||it.prev>0)bars+="<rect x='"+xP.toFixed(1)+"' y='"+(PT).toFixed(1)+"' width='"+bw+"' height='"+chartH.toFixed(1)+"' fill='#f0f0f5' rx='3'/>";
+    if(hA>0)bars+="<rect x='"+xA.toFixed(1)+"' y='"+yA.toFixed(1)+"' width='"+bw+"' height='"+hA.toFixed(1)+"' fill='"+color+"' rx='3'/>";
+    if(hP>0)bars+="<rect x='"+xP.toFixed(1)+"' y='"+yP.toFixed(1)+"' width='"+bw+"' height='"+hP.toFixed(1)+"' fill='#c7c7cc' rx='3'/>";
+    if(it.cur>0)vals+="<text x='"+(xA+bw/2).toFixed(1)+"' y='"+(yA-6).toFixed(1)+"' text-anchor='middle' font-size='9' font-weight='700' fill='"+color+"'>"+fmt(it.cur)+"</text>";
+    var words=it.label.split(" "),mid=(PT+chartH+14).toFixed(1);
+    if(words.length<=2){
+      labels+="<text x='"+cx.toFixed(1)+"' y='"+mid+"' text-anchor='middle' font-size='10' fill='#aeaeb2' font-weight='600'>"+it.label+"</text>";
+    }else{
+      var half=Math.ceil(words.length/2);
+      labels+="<text x='"+cx.toFixed(1)+"' y='"+mid+"' text-anchor='middle' font-size='10' fill='#aeaeb2' font-weight='600'>"+words.slice(0,half).join(" ")+"</text>";
+      labels+="<text x='"+cx.toFixed(1)+"' y='"+(Number(mid)+13).toFixed(1)+"' text-anchor='middle' font-size='10' fill='#aeaeb2' font-weight='600'>"+words.slice(half).join(" ")+"</text>";
+    }
+    // Transparent hit zone — data stored as data-* attributes, tooltip handled by one global script
+    var enc=encodeURIComponent(JSON.stringify({label:it.label,cur:fmt(it.cur),prev:fmt(it.prev)}));
+    bars+="<rect class='barhit' data-bc='"+id+"' data-info='"+enc+"' x='"+(cx-groupW/2).toFixed(1)+"' y='"+PT+"' width='"+groupW.toFixed(1)+"' height='"+chartH+"' fill='transparent'/>";
+  });
+  var base="<line x1='"+PL+"' y1='"+(PT+chartH)+"' x2='"+(W-PR)+"' y2='"+(PT+chartH)+"' stroke='#d2d2d7' stroke-width='1'/>";
+  var leg="<rect x='"+PL+"' y='5' width='8' height='8' fill='"+color+"' rx='2'/><text x='"+(PL+12)+"' y='13' font-size='9' fill='#aeaeb2' font-weight='700' letter-spacing='0.5'>ATUAL</text><rect x='"+(PL+54)+"' y='5' width='8' height='8' fill='#c7c7cc' rx='2'/><text x='"+(PL+66)+"' y='13' font-size='9' fill='#aeaeb2' font-weight='700' letter-spacing='0.5'>ANTERIOR</text>";
+  return"<div class='bcwrap' id='"+id+"' style='position:relative;overflow-x:auto;margin:6px 0 4px'>"
+    +"<div class='bctt' style='display:none;position:absolute;background:#fff;border:1px solid #d2d2d7;border-radius:8px;padding:10px 12px;pointer-events:none;z-index:50;min-width:140px;box-shadow:0 4px 16px rgba(0,0,0,.12)'></div>"
+    +"<svg viewBox='0 0 "+W+" "+H+"' xmlns='http://www.w3.org/2000/svg' style='width:100%;max-width:"+W+"px;height:auto;font-family:Montserrat,sans-serif;display:block'>"+leg+base+bars+vals+labels+"</svg>"
+    +"</div>";
+}
+
+
+// Meta hero KPIs
+function heroKpiTt(cur,prev,fmt,isNeutralMetric){
+  if(!Number.isFinite(prev)||prev===0)return"";
+  var d=((cur-prev)/Math.abs(prev)*100);
+  var sign=d>0?"+":"";
+  var pct=sign+Number(d).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
+  var color=isNeutralMetric?"#6e6e73":d>0?"#1a8a45":"#cc2222";
+  return'<div class="kpi-tt"><span class="ktt-pct" style="color:'+color+'">'+pct+'</span><span class="ktt-prev">ant. '+fmt(prev)+'</span></div>';
+}
+function heroes(){
+  const m=D.meta.m,p=D.metaPrev&&D.metaPrev.m||{};
+  // Candidate metrics — each: [label, value, formatted, subtitle, fmt, isLowBetter, priority]
+  // priority: lower number = shown first when present
+  var cands=[
+    {k:"roas",       l:"ROAS",          v:m.roas,        f:v=>fdec(v,2),  s:"Retorno sobre investimento", low:false, pri:1},
+    {k:"receita",    l:"Receita",        v:m.receita,     f:fcur,          s:"Valor atribuído às compras",  low:false, pri:2},
+    {k:"compras",    l:"Compras",        v:m.compras,     f:fint,          s:"Volume de compras",           low:false, pri:3},
+    {k:"conversas",  l:"Conversas",      v:m.conversas,   f:fint,          s:"Resultados de mensagens",     low:false, pri:4},
+    {k:"custo_conversa",l:"Custo/Conv.", v:m.custo_conversa,f:fcur,        s:"Eficiência das conversas",   low:true,  pri:5},
+    {k:"visitas",    l:"Visitas",        v:m.visitas,     f:fint,          s:"Visitas ao perfil",           low:false, pri:6},
+    {k:"custo_visita",l:"Custo/Visita",  v:m.custo_visita,f:fcur,          s:"Eficiência do tráfego",       low:true,  pri:7},
+    {k:"seguidores", l:"Seguidores",     v:m.seguidores,  f:fint,          s:"Novos seguidores captados",   low:false, pri:8},
+    {k:"adicoes_carrinho",l:"Adições Carrinho",v:m.adicoes_carrinho,f:fint,s:"Produtos adicionados",        low:false, pri:9},
+    {k:"investimento",l:"Investimento",  v:m.investimento,f:fcur,          s:"Total investido no período",  low:false, pri:99}
+  ];
+  // Filter to only metrics with real value > 0, sort by priority
+  var valid=cands.filter(function(x){return Number.isFinite(x.v)&&x.v>0;}).sort(function(a,b){return a.pri-b.pri;});
+  // Always include investimento as last hero if we have fewer than 3
+  if(valid.length<3){
+    var hasInv=valid.some(function(x){return x.k==="investimento";});
+    if(!hasInv&&Number.isFinite(m.investimento)&&m.investimento>0){
+      var inv=cands.find(function(x){return x.k==="investimento";});
+      if(inv)valid.push(inv);
+    }
+  }
+  // Take top 3
+  var chosen=valid.slice(0,3);
+  var colors=["blue","dark","dark"];
+  return chosen.map(function(x,i){
+    var col=colors[i]||"dark";
+    var pv=p[x.k];
+    return'<div class="kpi '+col+'">'+heroKpiTt(x.v,pv,x.f,x.low)+'<div class="kl">'+x.l+'</div><div class="kv">'+x.f(x.v)+'</div><div class="ks">'+x.s+'</div></div>';
+  }).join("");
+}
+
+function breakdown(){
+  const camps=D.meta.campaigns||[];
+  if(!camps.length){
+    // fallback to flat breakdown
+    const rows=D.meta.breakdown||[];
+    if(!rows.length)return'<p style="color:var(--faint);font-size:13px;padding:8px 0">Nenhum conjunto detalhado.</p>';
+    return'<div class="tw"><table><thead><tr><th>Conjunto / Campanha</th><th>Objetivo</th><th class="r">Resultados</th><th class="r">Custo/Resultado</th><th class="r">Investimento</th></tr></thead><tbody>'+rows.map(r=>'<tr><td class="camp">'+r.nome+'</td><td style="color:var(--muted);font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.tipo+'</td><td class="num r">'+fint(r.resultados)+'</td><td class="num r">'+fcur(r.cpr)+'</td><td class="num r">'+fcur(r.spent)+'</td></tr>').join("")+'</tbody></table></div>';
+  }
+  var html='<div class="tw"><table><thead><tr><th>Campanha / Conjunto</th><th>Anúncio</th><th>Objetivo</th><th class="r">Resultados</th><th class="r">Custo/Resultado</th><th class="r">Investimento</th></tr></thead><tbody>';
+  camps.forEach(function(c){
+    // Campaign header row
+    var campPct=D.meta.m&&D.meta.m.investimento>0?(c.spent/D.meta.m.investimento*100).toFixed(0)+"% do total":"";
+    html+='<tr style="background:#f5f5f7;border-top:2px solid var(--border)">'
+      +'<td colspan="3" style="font-size:11px;font-weight:700;letter-spacing:.3px;color:var(--text);padding:10px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px" title="'+c.campanha+'">'+c.campanha+'</td>'
+      +'<td class="num r" style="font-size:11px;font-weight:700;color:var(--muted)">'+fint(c.resultados)+'</td>'
+      +'<td></td>'
+      +'<td class="num r" style="font-size:11px;font-weight:700;color:var(--text)">'+fcur(c.spent)+'</td>'
+      +'</tr>';
+    // Adset rows
+    c.conjuntos.forEach(function(as){
+      var adLabel=as.anuncio?'<span style="font-size:10px;color:var(--faint);font-weight:500;display:block;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+as.anuncio+'">'+as.anuncio+'</span>':"—";
+      html+='<tr>'
+        +'<td class="camp" style="padding-left:24px;font-size:12px;font-weight:500;color:var(--muted)">↳ '+as.nome+'</td>'
+        +'<td style="max-width:180px;padding:8px 12px">'+adLabel+'</td>'
+        +'<td style="color:var(--faint);font-size:10px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+as.tipo+'</td>'
+        +'<td class="num r">'+fint(as.resultados)+'</td>'
+        +'<td class="num r">'+fcur(as.cpr)+'</td>'
+        +'<td class="num r">'+fcur(as.spent)+'</td>'
+        +'</tr>';
+    });
+  });
+  html+='</tbody></table></div>';
+  return html;
+}
+
+function gRows(){
+  const rows=(D.google&&D.google.campaigns)||[];
+  if(!rows.length)return'<p style="color:var(--faint);font-size:13px;padding:8px 0">Nenhuma campanha disponível.</p>';
+  return'<div class="tw"><table><thead><tr><th>Campanha</th><th class="r">Cliques</th><th class="r">Conversões</th><th class="r">Custo</th><th class="r">Custo/Conv.</th></tr></thead><tbody>'+rows.map(c=>'<tr><td class="camp">'+c.campanha+'</td><td class="num r">'+fint(c.clicks)+'</td><td class="num r">'+fint(c.conversions)+'</td><td class="num r">'+fcur(c.cost)+'</td><td class="num r">'+fcur(c.cpr)+'</td></tr>').join("")+'</tbody></table></div>'
+}
+
+function kwTop5(){
+  const kws=(D.keywords||[]).slice(0,5);
+  if(!kws.length)return"";
+  return'<div class="kwg">'+kws.map((k,i)=>'<div class="kwc'+(i===0?' top1':'')+'"><div class="kwrk">'+(i===0?'🏆 Top keyword':'#'+(i+1))+'</div><div class="kwn">'+k.kw+'</div><div class="kwv">'+fint(k.clicks)+'</div><div class="kws">cliques</div><div class="kws">Imp: '+fint(k.imp)+'</div><div class="kws">CTR: '+fpct(k.ctr,1)+'</div><div class="kws">CPC: '+fcur(k.cpc)+'</div>'+(k.conv>0?'<div class="kws">Conv.: '+fint(k.conv)+'</div>':'')+'</div>').join("")+'</div>'
+}
+
+function kwTable(){
+  const kws=D.keywords||[];
+  if(!kws.length)return'<p style="color:var(--faint);font-size:13px;padding:8px 0">Nenhum dado de palavras-chave enviado. Para habilitar esta seção, envie o relatório de palavras-chave do Google Ads.</p>';
+  return'<div class="tw"><table><thead><tr><th>Palavra-chave</th><th class="r">Cliques</th><th class="r">Impressões</th><th class="r">CTR</th><th class="r">CPC</th><th class="r">Conv.</th><th class="r">Custo</th></tr></thead><tbody>'+kws.map(k=>'<tr><td class="camp">'+k.kw+'</td><td class="num r">'+fint(k.clicks)+'</td><td class="num r">'+fint(k.imp)+'</td><td class="num r">'+fpct(k.ctr,1)+'</td><td class="num r">'+fcur(k.cpc)+'</td><td class="num r">'+fint(k.conv)+'</td><td class="num r">'+fcur(k.cost)+'</td></tr>').join("")+'</tbody></table></div>'
+}
+
+// ── render ──
+const mp=D.meta.m,pp=D.metaPrev.m;
+
+function heroesGoogle(){
+  var g=D.google?D.google.m:{},gp=(D.googlePrev&&D.googlePrev.m)||{};
+  var items=[
+    {k:"Custo",v:fcur(g.cost),s:"Investimento do período.",cls:"dark",cur:g.cost,prev:gp.cost,fmt:fcur,neutral:true},
+    {k:"Conversões",v:fint(g.conversions),s:"Total de conversões.",cls:"dark",cur:g.conversions,prev:gp.conversions,fmt:fint,neutral:false},
+    {k:"Custo/Conv.",v:fcur(g.costPerConversion),s:"Eficiência das campanhas.",cls:"dark",cur:g.costPerConversion,prev:gp.costPerConversion,fmt:fcur,neutral:false}
+  ];
+  return items.map(function(x){return'<div class="kpi '+x.cls+'">'+heroKpiTt(x.cur,x.prev,x.fmt,x.neutral)+'<div class="kl">'+x.k+'</div><div class="kv">'+x.v+'</div><div class="ks">'+x.s+'</div></div>';}).join("");
+}
+
+function gCampaignSummary(){
+  var rows=(D.google&&D.google.campaigns)||[];
+  if(!rows.length)return"";
+  var lines=rows.filter(function(r){return r.clicks>0||r.cost>0;}).map(function(r){
+    return r.campanha+(r.conversions>0?" ("+fint(r.conversions)+" conv.)":"");
+  });
+  if(!lines.length)return"";
+  var aiText=(D.analysis&&D.analysis.contextGoogle)||"";
+  var body=aiText
+    ?'<p style="font-size:13px;color:#374151;line-height:1.7;font-weight:500">'+aiText+'</p>'
+    :'<p style="font-size:13px;color:#374151;line-height:1.7">Campanhas ativas: <strong>'+lines.join(", ")+'</strong>.</p>';
+  return'<div class="ctx-block ctx-google">'+body+'</div>';
+}
+
+function metaCampaignSummary(){
+  var rows=D.meta.breakdown||[];
+  if(!rows.length)return"";
+  var aiText=(D.analysis&&D.analysis.contextMeta)||"";
+  if(aiText){
+    return'<div class="ctx-block">'+aiText+'</div>';
+  }
+  var types=[...new Set(rows.map(function(r){return r.tipo;}).filter(Boolean))].slice(0,4);
+  if(!types.length)return"";
+  return'<div style="background:#eef3ff;border:1px solid #c8d9ff;border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start">'
+    +'<span style="font-size:18px;flex-shrink:0;margin-top:1px">📋</span>'
+    +'<div><p style="font-size:13px;color:#374151;line-height:1.7">Objetivos ativos nesta semana: <strong>'+types.join(", ")+'</strong>.</p></div>'
+    +'</div>';
+}
+var metaChartItems=[
+  {label:"Conversas",cur:mp.conversas||0,prev:pp.conversas||0},
+  {label:"Seguidores",cur:mp.seguidores||0,prev:pp.seguidores||0},
+  {label:"Visitas",cur:mp.visitas||0,prev:pp.visitas||0},
+  {label:"Compras",cur:mp.compras||0,prev:pp.compras||0},
+  {label:"Cliques",cur:mp.cliques||0,prev:pp.cliques||0}
+].filter(function(i){return i.cur>0||i.prev>0});
+var metaChart=metaChartItems.length?'<div style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border-light)"><div class="sdiv" style="margin-top:0;padding-top:0;border:none">Comparativo de resultados</div>'+barChart(metaChartItems,"#0866FF")+'</div>':"";
+// Meta: build rows with ALL non-zero metrics for unified summary table
+const metaRows=(function(){
+  // Determinar quais chaves já aparecem no hero por perfil
+  var heroKeys=new Set(["investimento"]); // investimento sempre aparece no hero
+  if(D.profile==="CRM/E-commerce"){heroKeys.add("roas");heroKeys.add("receita");heroKeys.add("compras");}
+  else if(D.profile==="Tráfego"){heroKeys.add("visitas");heroKeys.add("custo_visita");}
+  else{heroKeys.add("conversas");} // seguidores fica nos cards mesmo aparecendo no hero
+  var all=[
+    {label:"Investimento",cur:mp.investimento,prev:pp.investimento,fmtCur:fcur(mp.investimento),fmtPrev:fcur(pp.investimento),k:"investimento"},
+    {label:"Alcance",cur:mp.alcance,prev:pp.alcance,fmtCur:fint(mp.alcance),fmtPrev:fint(pp.alcance),k:"alcance"},
+    {label:"Impressões",cur:mp.impressoes,prev:pp.impressoes,fmtCur:fint(mp.impressoes),fmtPrev:fint(pp.impressoes),k:"impressoes"},
+    {label:"Cliques",cur:mp.cliques,prev:pp.cliques,fmtCur:fint(mp.cliques),fmtPrev:fint(pp.cliques),k:"cliques"},
+    {label:"CTR",cur:mp.ctr,prev:pp.ctr,fmtCur:fpct(mp.ctr,2),fmtPrev:fpct(pp.ctr,2),k:"ctr"},
+    {label:"CPC médio",cur:mp.cpc,prev:pp.cpc,fmtCur:fcur(mp.cpc),fmtPrev:fcur(pp.cpc),k:"cpc"},
+    {label:"Frequência",cur:mp.frequencia,prev:pp.frequencia,fmtCur:fdec(mp.frequencia,2),fmtPrev:fdec(pp.frequencia,2),k:"frequencia"},
+    {label:"Conversas",cur:mp.conversas,prev:pp.conversas,fmtCur:fint(mp.conversas),fmtPrev:fint(pp.conversas),k:"conversas"},
+    {label:"Custo/Conversa",cur:mp.custo_conversa,prev:pp.custo_conversa,fmtCur:fcur(mp.custo_conversa),fmtPrev:fcur(pp.custo_conversa),k:"custo_conversa"},
+    {label:"Compras",cur:mp.compras,prev:pp.compras,fmtCur:fint(mp.compras),fmtPrev:fint(pp.compras),k:"compras"},
+    {label:"Custo/Compra",cur:mp.custo_compra,prev:pp.custo_compra,fmtCur:fcur(mp.custo_compra),fmtPrev:fcur(pp.custo_compra),k:"custo_compra"},
+    {label:"Seguidores",cur:mp.seguidores,prev:pp.seguidores,fmtCur:fint(mp.seguidores),fmtPrev:fint(pp.seguidores),k:"seguidores"},
+    {label:"Custo/Seguidor",cur:mp.custo_seguidor,prev:pp.custo_seguidor,fmtCur:fcur(mp.custo_seguidor),fmtPrev:fcur(pp.custo_seguidor),k:"custo_seguidor"},
+    {label:"Visitas ao Perfil",cur:mp.visitas,prev:pp.visitas,fmtCur:fint(mp.visitas),fmtPrev:fint(pp.visitas),k:"visitas"},
+    {label:"Custo/Visita",cur:mp.custo_visita,prev:pp.custo_visita,fmtCur:fcur(mp.custo_visita),fmtPrev:fcur(pp.custo_visita),k:"custo_visita"},
+    {label:"ROAS",cur:mp.roas,prev:pp.roas,fmtCur:fdec(mp.roas),fmtPrev:fdec(pp.roas),k:"roas"},
+    {label:"Receita",cur:mp.receita,prev:pp.receita,fmtCur:fcur(mp.receita),fmtPrev:fcur(pp.receita),k:"receita"},
+    {label:"Adições Carrinho",cur:mp.adicoes_carrinho,prev:pp.adicoes_carrinho,fmtCur:fint(mp.adicoes_carrinho),fmtPrev:fint(pp.adicoes_carrinho),k:"adicoes_carrinho"},
+    {label:"Thruplay",cur:mp.thruplay,prev:pp.thruplay,fmtCur:fint(mp.thruplay),fmtPrev:fint(pp.thruplay),k:"thruplay"},
+  ];
+  return all.filter(function(r){
+    if(heroKeys.has(r.k))return false;
+    return(Number.isFinite(r.cur)&&r.cur>0)||(Number.isFinite(r.prev)&&r.prev>0);
+  });
+})();
+
+var metaCtxHtml=D.analysis&&D.analysis.contextMeta
+  ?'<div class="ctx-block">'+D.analysis.contextMeta+'</div>'
+  :metaCampaignSummary();
+if(document.getElementById("panel-meta"))document.getElementById("panel-meta").innerHTML=
+  metaCtxHtml+
+  '<div class="sec"><div class="sec-hd"><h2>Visão Geral <span style="color:var(--faint);font-weight:400">— Meta Ads</span></h2><div style="display:flex;align-items:center;gap:10px"><span class="lbl">'+D.period+' vs '+D.prevPeriod+'</span><span class="chtag meta">Meta Ads</span></div></div><div class="sec-bd">'+
+  '<div class="hg">'+heroes()+'</div>'+
+  metricCards(metaRows)+
+  '</div></div>'+
+  '<div class="sec"><div class="sec-hd"><h2>Desempenho por Conjunto</h2><span class="lbl">Separado por tipo de resultado</span></div><div class="sec-bd">'+breakdown()+'</div></div>';
+
+if(D.google){
+  const g=D.google.m,gp=(D.googlePrev&&D.googlePrev.m)||{};
+  var gChartItems=[
+    {label:"Cliques",cur:g.clicks||0,prev:gp.clicks||0},
+    {label:"Conversoes",cur:g.conversions||0,prev:gp.conversions||0},
+    {label:"Custo",cur:g.cost||0,prev:gp.cost||0,fmt:fcur}
+  ].filter(function(i){return i.cur>0||i.prev>0});
+  var googleChart=gChartItems.length?'<div style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border-light)"><div class="sdiv" style="margin-top:0;padding-top:0;border:none">Comparativo</div>'+barChart(gChartItems,"#185EA6")+'</div>':"";
+  const hasKw=D.keywords&&D.keywords.length>0;
+  const kwSec=hasKw
+    ?'<div class="sec"><div class="sec-hd"><h2>Top 5 Palavras-chave</h2><span class="chtag google">Google Ads · por cliques</span></div><div class="sec-bd">'+kwTop5()+'<div class="sdiv">Todas as palavras-chave</div>'+kwTable()+'</div></div>'
+    :'<div class="sec"><div class="sec-hd"><h2>Palavras-chave</h2><span class="lbl">Relatório não enviado</span></div><div class="sec-bd">'+kwTable()+'</div></div>';
+
+  const googleRows=[
+    {label:"Cliques",cur:g.clicks,prev:gp.clicks||0,fmtCur:fint(g.clicks),fmtPrev:fint(gp.clicks||0),k:"clicks"},
+    {label:"Impressões",cur:g.impressions,prev:gp.impressions||0,fmtCur:fint(g.impressions),fmtPrev:fint(gp.impressions||0),k:"impressions"},
+    {label:"CTR",cur:g.ctr,prev:gp.ctr||0,fmtCur:fpct(g.ctr,2),fmtPrev:fpct(gp.ctr||0,2),k:"ctr"},
+    {label:"CPC médio",cur:g.cpc,prev:gp.cpc||0,fmtCur:fcur(g.cpc),fmtPrev:fcur(gp.cpc||0),k:"cpc"},
+    {label:"Taxa de Conv.",cur:g.conversionRate,prev:gp.conversionRate||0,fmtCur:fpct(g.conversionRate,2),fmtPrev:fpct(gp.conversionRate||0,2),k:"conversionRate"},
+  ].filter(function(r){return(Number.isFinite(r.cur)&&r.cur>0)||(Number.isFinite(r.prev)&&r.prev>0)});
+
+  var gContextHtml=D.analysis&&D.analysis.contextGoogle
+    ?'<div class="ctx-block ctx-google">'+D.analysis.contextGoogle+'</div>'
+    :gCampaignSummary();
+
+  document.getElementById("panel-google").innerHTML=
+    gContextHtml+
+    '<div class="sec"><div class="sec-hd"><h2>Visão Geral <span style="color:var(--faint);font-weight:400">— Google Ads</span></h2><div style="display:flex;align-items:center;gap:10px"><span class="lbl">'+D.period+' vs '+D.prevPeriod+'</span><span class="chtag google">Google Ads</span></div></div><div class="sec-bd">'+
+    '<div class="hg">'+heroesGoogle()+'</div>'+
+    metricCards(googleRows,3)+
+    '</div></div>'+
+    '<div class="sec"><div class="sec-hd"><h2>Campanhas</h2><span class="chtag google">Google Ads</span></div><div class="sec-bd">'+gRows()+'</div></div>'+
+    kwSec;
+}
+
+document.getElementById("panel-resumo").innerHTML=
+  (function(){
+    var metaInv=mp.investimento||0;
+    var prevMetaInv=(pp&&pp.investimento)||0;
+    var googleInv=D.google&&D.google.m?D.google.m.cost||0:0;
+    var prevGoogleInv=D.googlePrev&&D.googlePrev.m?D.googlePrev.m.cost||0:0;
+    var totalInv=metaInv+googleInv;
+    var prevTotalInv=prevMetaInv+prevGoogleInv;
+    var d=prevTotalInv>0?((totalInv-prevTotalInv)/prevTotalInv*100):null;
+    var dstr=d==null?"—":Number(d).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
+    var dcls=d==null?"same":Math.abs(d)<0.05?"same":"same"; // investimento é neutro
+    var breakdown='<div style="display:flex;gap:24px;margin-top:12px;flex-wrap:wrap">';
+    breakdown+='<div style="font-size:12px;color:var(--muted);font-weight:500"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--meta);margin-right:6px"></span>Meta Ads: <strong style="color:var(--text)">'+fcur(metaInv)+'</strong></div>';
+    if(D.google)breakdown+='<div style="font-size:12px;color:var(--muted);font-weight:500"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--google);margin-right:6px"></span>Google Ads: <strong style="color:var(--text)">'+fcur(googleInv)+'</strong></div>';
+    breakdown+='</div>';
+    return'<div class="sec"><div class="sec-hd"><h2>Investimento Total</h2><div style="display:flex;align-items:center;gap:10px"><span class="lbl">'+D.reportType+' · '+D.period+'</span><span class="chtag resumo">Resumo</span></div></div><div class="sec-bd">'
+      +'<div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap">'
+      +'<div style="font-size:38px;font-weight:800;letter-spacing:-1px;color:var(--text);line-height:1">'+fcur(totalInv)+'</div>'
+      +'<div style="margin-bottom:6px"><span class="mc-bdg same" style="font-size:11px">'+dstr+' vs anterior</span></div>'
+      +'</div>'
+      +breakdown
+      +'</div></div>';
+  })()+
+  '<div class="sec"><div class="sec-hd"><h2>Leitura Final</h2><div style="display:flex;align-items:center;gap:10px"><span class="lbl">'+D.reportType+' · '+D.period+'</span><span class="chtag resumo">Resumo</span></div></div><div class="sec-bd">'+
+  '<div class="rg">'+
+    '<div class="ab ab-pos"><div class="abt"><em></em>Pontos Positivos</div><ul>'+listH(D.analysis.positivos)+'</ul></div>'+
+    '<div class="ab ab-neg"><div class="abt"><em></em>Pontos de Atenção</div><ul>'+listH(D.analysis.atencao)+'</ul></div>'+
+  '</div>'+
+  '<div class="ab ab-next"><div class="abt"><em></em>Próximos Passos</div><ul>'+listH(D.analysis.proximos)+'</ul></div>'+
+  '</div></div>';
+
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  btn.classList.add("active");
+  const panel=document.getElementById("panel-"+btn.dataset.tab);
+  if(panel)panel.classList.add("active");
+}));
+document.getElementById("footer").textContent="Relatório gerado automaticamente em "+D.generatedAt+" · "+D.client;
+// ── Bar chart tooltips ──
+document.addEventListener("mouseover",function(e){
+  var hit=e.target.closest(".barhit");
+  if(!hit)return;
+  var wrap=hit.closest(".bcwrap");
+  if(!wrap)return;
+  var tt=wrap.querySelector(".bctt");
+  if(!tt)return;
+  var info=JSON.parse(decodeURIComponent(hit.getAttribute("data-info")||"{}"));
+  tt.innerHTML="<div style='font-size:11px;font-weight:700;margin-bottom:6px;color:#1d1d1f'>"+info.label+"</div>"
+    +"<div style='display:flex;flex-direction:column;gap:4px'>"
+    +"<div style='display:flex;justify-content:space-between;gap:16px'><span style='font-size:10px;color:#6e6e73;font-weight:600'>Atual</span><span style='font-size:12px;font-weight:800;color:#1d1d1f'>"+info.cur+"</span></div>"
+    +"<div style='display:flex;justify-content:space-between;gap:16px'><span style='font-size:10px;color:#6e6e73;font-weight:600'>Anterior</span><span style='font-size:12px;font-weight:700;color:#aeaeb2'>"+info.prev+"</span></div>"
+    +"</div>";
+  tt.style.display="block";
+});
+document.addEventListener("mousemove",function(e){
+  var hit=e.target.closest(".barhit");
+  if(!hit)return;
+  var wrap=hit.closest(".bcwrap");
+  if(!wrap)return;
+  var tt=wrap.querySelector(".bctt");
+  if(!tt)return;
+  var r=wrap.getBoundingClientRect();
+  var x=e.clientX-r.left+14,y=e.clientY-r.top-70;
+  if(x+160>r.width)x=e.clientX-r.left-174;
+  if(y<0)y=4;
+  tt.style.left=x+"px";tt.style.top=y+"px";
+});
+document.addEventListener("mouseout",function(e){
+  var hit=e.target.closest(".barhit");
+  if(!hit)return;
+  var wrap=hit.closest(".bcwrap");
+  if(!wrap)return;
+  var related=e.relatedTarget;
+  if(related&&wrap.contains(related)&&related.closest(".barhit"))return;
+  var tt=wrap.querySelector(".bctt");
+  if(tt)tt.style.display="none";
+});
+</script>
+</body>
+</html>
