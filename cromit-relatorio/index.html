@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cromit Móveis — Relatório de Abril 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --ink: #1a1a2e;
+  --muted: #7b8193;
+  --line: #edf0f6;
+  --bg: #f7f8fa;
+  --meta: #0866ff;
+  --google: #4285f4;
+  --green: #16a34a;
+  --amber: #f59e0b;
+}
+body { font-family: 'Montserrat', Arial, sans-serif; background: var(--bg); color: var(--ink); }
+.header {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--ink); color: #fff;
+  padding: 18px 34px; display: flex; align-items: center; justify-content: space-between; gap: 18px;
+}
+.header-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.logo { width: 38px; height: 38px; border-radius: 9px; background: var(--meta); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+.header-title { font-size: 15px; font-weight: 800; }
+.header-sub { color: rgba(255,255,255,.55); font-size: 12px; margin-top: 2px; font-weight: 500; }
+.header-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.header-badge { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.16); border-radius: 20px; padding: 7px 14px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,.75); }
+.btn-export { border: none; background: #fff; color: var(--ink); border-radius: 8px; padding: 9px 16px; font: 700 12px 'Montserrat'; cursor: pointer; }
+.tabs { background: #fff; border-bottom: 2px solid var(--line); padding: 0 34px; display: flex; gap: 0; overflow-x: auto; }
+.tab { padding: 15px 22px; font-size: 12px; font-weight: 800; color: #a3a8b5; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+.content { max-width: 1220px; margin: 0 auto; padding: 30px 34px 46px; }
+.panel { display: none; }
+.panel.active { display: block; }
+.hero {
+  background: #fff; border: 1px solid var(--line); border-radius: 14px;
+  padding: 26px; display: grid; grid-template-columns: 1.25fr .75fr; gap: 26px; margin-bottom: 22px;
+}
+.eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 800; margin-bottom: 10px; }
+h1 { font-size: 34px; line-height: 1.08; letter-spacing: 0; margin-bottom: 12px; }
+.lead { color: var(--muted); line-height: 1.55; font-size: 13px; max-width: 760px; }
+.hero-side { border-left: 1px solid var(--line); padding-left: 24px; display: grid; align-content: center; gap: 12px; }
+.big-number { font-size: 34px; font-weight: 800; line-height: 1; }
+.side-label { font-size: 11px; color: var(--muted); font-weight: 700; }
+.kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 24px; }
+.kpi-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 16px; min-width: 0; }
+.kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #a3a8b5; font-weight: 800; margin-bottom: 8px; }
+.kpi-value { font-size: 22px; line-height: 1; font-weight: 800; white-space: nowrap; }
+.kpi-note { margin-top: 8px; color: var(--muted); font-size: 11px; font-weight: 600; line-height: 1.35; }
+.meta { color: var(--meta); }
+.google { color: var(--google); }
+.green { color: var(--green); }
+.section-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 26px 0 16px; }
+.section-title { font-size: 14px; font-weight: 800; }
+.section-sub { color: var(--muted); font-size: 11px; font-weight: 600; }
+.chart-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+.chart-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+.chart-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 21px; min-width: 0; }
+.chart-card.full { grid-column: 1 / -1; }
+.chart-title { font-size: 12px; font-weight: 800; margin-bottom: 4px; }
+.chart-sub { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 16px; }
+.chart-wrap { position: relative; height: 238px; }
+.chart-wrap.tall { height: 315px; }
+table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+th { background: #fafbfe; color: #7d8493; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; text-align: left; padding: 13px 14px; border-bottom: 1px solid var(--line); }
+td { padding: 13px 14px; font-size: 12px; font-weight: 600; border-bottom: 1px solid #f3f5fa; vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+.good { color: var(--green); font-weight: 800; }
+.bad { color: #dc2626; font-weight: 800; }
+.neutral { color: var(--muted); font-weight: 800; }
+.insights { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+.insight { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.insight-tag { display: inline-flex; border-radius: 20px; padding: 5px 9px; background: #eef3ff; color: var(--meta); font-size: 10px; font-weight: 800; margin-bottom: 12px; }
+.insight-tag.google-tag { background: #eff6ff; color: var(--google); }
+.insight-tag.good-tag { background: #ecfdf3; color: var(--green); }
+.insight-metric { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.insight-desc { color: var(--muted); font-size: 12px; line-height: 1.55; font-weight: 500; }
+.note { color: var(--muted); font-size: 11px; line-height: 1.55; margin-top: 12px; }
+@media (max-width: 900px) {
+  .header { align-items: flex-start; padding: 16px 20px; }
+  .tabs { padding: 0 20px; }
+  .content { padding: 22px 20px 38px; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-side { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; padding-top: 20px; }
+  .kpi-grid, .chart-grid-2, .chart-grid-3, .insights { grid-template-columns: 1fr; }
+  h1 { font-size: 27px; }
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-left">
+    <div class="logo">CR</div>
+    <div>
+      <div class="header-title">Cromit Móveis</div>
+      <div class="header-sub">Relatório de gastos e performance · Abril 2026</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="header-badge">Meta Ads + Google Ads · 01/04 a 30/04</div>
+    <button class="btn-export" onclick="exportPDF()">Exportar PDF</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" onclick="switchTab('overview')">Visão Geral</div>
+  <div class="tab" onclick="switchTab('meta')">Meta Ads</div>
+  <div class="tab" onclick="switchTab('google')">Google Ads</div>
+  <div class="tab" onclick="switchTab('weekly')">Semana a Semana</div>
+  <div class="tab" onclick="switchTab('insights')">Insights</div>
+</nav>
+
+<main class="content">
+  <section id="tab-overview" class="panel active">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Resumo executivo</div>
+        <h1>Investimento de abril com dados consolidados de mídia</h1>
+        <p class="lead">O mês fechou com investimento combinado de Meta Ads e Google Ads. No Meta, o total agora soma os exports das planilhas com o recorte adicional de campanhas de mensagens/conversas informado para abril.</p>
+      </div>
+      <div class="hero-side">
+        <div>
+          <div class="side-label">Investimento total</div>
+          <div class="big-number" id="heroSpend"></div>
+        </div>
+        <div class="side-label">Meta: <strong id="heroMeta"></strong> · Google: <strong id="heroGoogle"></strong></div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Meta · Conversas</div><div class="kpi-value meta" id="kpiMetaConv"></div><div class="kpi-note" id="kpiMetaConvCost"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Meta · Seguidores</div><div class="kpi-value green" id="kpiFollowers"></div><div class="kpi-note" id="kpiFollowerCost"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Google · Conversões</div><div class="kpi-value google" id="kpiGConv"></div><div class="kpi-note" id="kpiGConvCost"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Google · Cliques</div><div class="kpi-value google" id="kpiGClicks"></div><div class="kpi-note" id="kpiGCpc"></div></div>
+    </div>
+
+    <div class="section-header"><div class="section-title">Evolução do investimento</div><div class="section-sub">Valores por semana em R$</div></div>
+    <div class="chart-grid-2">
+      <div class="chart-card"><div class="chart-title">Investimento por plataforma</div><div class="chart-sub">Meta Ads vs Google Ads</div><div class="chart-wrap"><canvas id="chartSpendPlatforms"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Investimento total semanal</div><div class="chart-sub">Soma das duas plataformas</div><div class="chart-wrap"><canvas id="chartTotalSpend"></canvas></div></div>
+    </div>
+
+    <div class="section-header"><div class="section-title">Leitura rápida</div><div class="section-sub">Pontos de performance do mês</div></div>
+    <div class="insights">
+      <div class="insight"><div class="insight-tag">Meta</div><div class="insight-metric" id="insightMeta"></div><div class="insight-desc">Total consolidado de conversas/mensagens: planilhas do Ads Manager somadas ao recorte adicional de campanhas de mensagens.</div></div>
+      <div class="insight"><div class="insight-tag good-tag">Seguidores</div><div class="insight-metric" id="insightFollowers"></div><div class="insight-desc">O volume de seguidores cresceu semana a semana e teve pico entre 22 e 30 de abril.</div></div>
+      <div class="insight"><div class="insight-tag google-tag">Google</div><div class="insight-metric" id="insightGoogle"></div><div class="insight-desc">A última semana respondeu por quase metade das conversões do Google, com o menor custo por conversão.</div></div>
+    </div>
+  </section>
+
+  <section id="tab-meta" class="panel">
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Investimento Meta</div><div class="kpi-value meta" id="metaSpend"></div><div class="kpi-note" id="metaSpendNote"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Conversas + mensagens</div><div class="kpi-value meta" id="metaConversations"></div><div class="kpi-note" id="metaCostConversation"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Seguidores</div><div class="kpi-value green" id="metaFollowers"></div><div class="kpi-note" id="metaCostFollower"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Impressões</div><div class="kpi-value" id="metaImpressions"></div><div class="kpi-note" id="metaImpressionsNote"></div></div>
+    </div>
+
+    <div class="section-header"><div class="section-title">Meta Ads · métricas prioritárias</div><div class="section-sub">Consolidado mensal + evolução semanal das planilhas</div></div>
+    <div class="chart-grid-2">
+      <div class="chart-card"><div class="chart-title">Conversas por semana</div><div class="chart-sub">Resultados de conversas por mensagem iniciadas</div><div class="chart-wrap"><canvas id="chartMetaConversations"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Custo por conversa</div><div class="chart-sub">Investimento em mensagens dividido por conversas</div><div class="chart-wrap"><canvas id="chartMetaCostConversation"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Seguidores por semana</div><div class="chart-sub">Novos seguidores atribuídos aos anúncios</div><div class="chart-wrap"><canvas id="chartMetaFollowers"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Custo por seguidor</div><div class="chart-sub">Investimento com geração de seguidores dividido por seguidores</div><div class="chart-wrap"><canvas id="chartMetaCostFollower"></canvas></div></div>
+    </div>
+
+    <div class="section-header"><div class="section-title">Campanhas de mensagens/conversas · dados complementares</div><div class="section-sub">Recorte informado para abril</div></div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Investimento</div><div class="kpi-value meta" id="msgCampaignSpend"></div><div class="kpi-note">Campanhas de mensagens/conversas</div></div>
+      <div class="kpi-card"><div class="kpi-label">Mensagens recebidas</div><div class="kpi-value meta" id="msgCampaignMessages"></div><div class="kpi-note" id="msgCampaignCostMessage"></div></div>
+      <div class="kpi-card"><div class="kpi-label">CPM</div><div class="kpi-value" id="msgCampaignCpm"></div><div class="kpi-note">Custo por mil impressões</div></div>
+      <div class="kpi-card"><div class="kpi-label">Alcance</div><div class="kpi-value green" id="msgCampaignReach"></div><div class="kpi-note">Contas alcançadas no recorte</div></div>
+    </div>
+
+    <div class="chart-grid-2">
+      <div class="chart-card"><div class="chart-title">Distribuição de investimento por tipo de resultado</div><div class="chart-sub">Abril completo</div><div class="chart-wrap tall"><canvas id="chartMetaDistribution"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Campanhas que mais geraram resultado</div><div class="chart-sub">Conversas e seguidores no mês</div><table id="metaCampaignTable"></table></div>
+    </div>
+    <p class="note">Observação: alcance e impressões estão somados em nível de anúncio, como vêm no export, por isso servem como escala operacional e não como alcance único deduplicado.</p>
+  </section>
+
+  <section id="tab-google" class="panel">
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Investimento Google</div><div class="kpi-value google" id="googleSpend"></div><div class="kpi-note">Search concentrou quase todo o gasto</div></div>
+      <div class="kpi-card"><div class="kpi-label">Conversões</div><div class="kpi-value google" id="googleConversions"></div><div class="kpi-note" id="googleCostConversion"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Cliques</div><div class="kpi-value google" id="googleClicks"></div><div class="kpi-note" id="googleCpc"></div></div>
+      <div class="kpi-card"><div class="kpi-label">CTR</div><div class="kpi-value green" id="googleCtr"></div><div class="kpi-note" id="googleImpressions"></div></div>
+    </div>
+
+    <div class="section-header"><div class="section-title">Google Ads · evolução semanal</div><div class="section-sub">Conversões, custo por conversão, cliques e CPC</div></div>
+    <div class="chart-grid-2">
+      <div class="chart-card"><div class="chart-title">Conversões por semana</div><div class="chart-sub">Conversões rastreadas no Google Ads</div><div class="chart-wrap"><canvas id="chartGoogleConversions"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Custo por conversão</div><div class="chart-sub">R$ investido por conversão</div><div class="chart-wrap"><canvas id="chartGoogleCostConversion"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Cliques por semana</div><div class="chart-sub">Volume de tráfego gerado</div><div class="chart-wrap"><canvas id="chartGoogleClicks"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Custo por clique</div><div class="chart-sub">CPC médio semanal</div><div class="chart-wrap"><canvas id="chartGoogleCpc"></canvas></div></div>
+    </div>
+
+    <div class="section-header"><div class="section-title">Campanhas Google</div><div class="section-sub">Resumo mensal por campanha</div></div>
+    <table id="googleCampaignTable"></table>
+  </section>
+
+  <section id="tab-weekly" class="panel">
+    <div class="section-header"><div class="section-title">Evolução semana a semana</div><div class="section-sub">Todas as métricas prioritárias no mesmo quadro</div></div>
+    <table id="weeklyTable"></table>
+    <div class="chart-grid-2" style="margin-top:18px">
+      <div class="chart-card"><div class="chart-title">Eficiência Meta</div><div class="chart-sub">Custo por conversa e custo por seguidor</div><div class="chart-wrap"><canvas id="chartMetaEfficiency"></canvas></div></div>
+      <div class="chart-card"><div class="chart-title">Eficiência Google</div><div class="chart-sub">Custo por conversão e CPC</div><div class="chart-wrap"><canvas id="chartGoogleEfficiency"></canvas></div></div>
+    </div>
+  </section>
+
+  <section id="tab-insights" class="panel">
+    <div class="section-header"><div class="section-title">Tendências e pontos de atenção</div><div class="section-sub">Leitura para tomada de decisão</div></div>
+    <div class="insights">
+      <div class="insight"><div class="insight-tag">Meta</div><div class="insight-metric">Conversas consolidadas no mês</div><div class="insight-desc">Somando planilhas e dados adicionais, o Meta totaliza 1.198 conversas/mensagens no mês.</div></div>
+      <div class="insight"><div class="insight-tag good-tag">Seguidores</div><div class="insight-metric">Última semana liderou volume</div><div class="insight-desc">Entre 22 e 30 de abril foram 151 seguidores atribuídos, 31% do total mensal, com custo por seguidor de R$ 3,35.</div></div>
+      <div class="insight"><div class="insight-tag google-tag">Google</div><div class="insight-metric">Conversão acelerou no fim</div><div class="insight-desc">A última semana gerou 33 conversões, 48% do mês, com custo por conversão de R$ 10,91.</div></div>
+      <div class="insight"><div class="insight-tag google-tag">Google</div><div class="insight-metric">Search carregou o resultado</div><div class="insight-desc">A campanha Search | Cromit respondeu por praticamente todo o investimento, cliques e conversões de abril.</div></div>
+      <div class="insight"><div class="insight-tag">Meta</div><div class="insight-metric">Mensagens entram no total</div><div class="insight-desc">O investimento adicional de R$ 1.785,65 foi incorporado ao investimento Meta e ao total geral de mídia.</div></div>
+      <div class="insight"><div class="insight-tag good-tag">Recomendação</div><div class="insight-metric">Replicar aprendizados da reta final</div><div class="insight-desc">A combinação de última semana forte no Google e bom custo de seguidores no Meta indica espaço para manter cadência e testar criativos similares.</div></div>
+    </div>
+    <table>
+      <thead><tr><th>Plataforma</th><th>Métrica</th><th>Tendência em abril</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>Meta</td><td>Conversas</td><td class="good">1.198 no consolidado</td><td>499 conversas nas planilhas + 699 mensagens recebidas no recorte adicional.</td></tr>
+        <tr><td>Meta</td><td>Mensagens recebidas</td><td class="good">699 no mês</td><td>Investimento de R$ 1.785,65, CPM de R$ 10,66 e alcance de 88.928.</td></tr>
+        <tr><td>Meta</td><td>Custo por conversa</td><td class="good">R$ 2,61 consolidado</td><td>Cálculo com investimento de mensagens das planilhas + investimento adicional dividido por 1.198 conversas/mensagens.</td></tr>
+        <tr><td>Meta</td><td>Seguidores</td><td class="good">Crescimento semanal</td><td>103 → 123 → 109 → 151 seguidores.</td></tr>
+        <tr><td>Google</td><td>Conversões</td><td class="good">Concentração final</td><td>33 conversões na última semana, o maior volume.</td></tr>
+        <tr><td>Google</td><td>CPC</td><td class="neutral">Baixo, mas subiu</td><td>R$ 0,35 na segunda semana e R$ 0,78 na última.</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+const DATA = {"summary": {"totalSpend": 4821.13, "metaSpend": 3613.76, "metaSpendBase": 1828.08, "googleSpend": 1207.37, "metaConversations": 1198, "metaConversationsBase": 499, "metaCostConversation": 2.61, "metaCostConversationBase": 2.68, "followers": 486, "costFollower": 3.63, "googleConversions": 68.29, "googleCostConversion": 17.68, "googleClicks": 2172, "googleCpc": 0.56, "googleCtr": 3.02, "googleImpressions": 71841, "metaImpressions": 328868, "metaImpressionsBase": 161356, "metaReachSum": 112690, "messageCampaignSpend": 1785.68, "messageCampaignMessages": 699, "messageCampaignCostMessage": 2.55, "messageCampaignCpm": 10.66, "messageCampaignReach": 88928, "messageCampaignImpressions": 167512}, "weekly": [{"label": "1 a 7", "metaSpend": 506.16, "googleSpend": 294.48, "totalSpend": 800.64, "metaConversations": 118, "metaCostConversation": 2.9, "followers": 103, "costFollower": 4.85, "googleConversions": 8.29, "googleCostConversion": 35.52, "googleClicks": 668, "googleCpc": 0.44}, {"label": "8 a 14", "metaSpend": 462.23, "googleSpend": 178.59, "totalSpend": 640.82, "metaConversations": 103, "metaCostConversation": 2.87, "followers": 123, "costFollower": 3.26, "googleConversions": 12.0, "googleCostConversion": 14.88, "googleClicks": 514, "googleCpc": 0.35}, {"label": "15 a 21", "metaSpend": 347.12, "googleSpend": 374.44, "totalSpend": 721.56, "metaConversations": 118, "metaCostConversation": 2.23, "followers": 109, "costFollower": 2.9, "googleConversions": 15.0, "googleCostConversion": 24.96, "googleClicks": 529, "googleCpc": 0.71}, {"label": "22 a 30", "metaSpend": 512.57, "googleSpend": 359.87, "totalSpend": 872.44, "metaConversations": 160, "metaCostConversation": 2.66, "followers": 151, "costFollower": 3.35, "googleConversions": 33.0, "googleCostConversion": 10.91, "googleClicks": 461, "googleCpc": 0.78}], "metaSpendByType": {"Conversas por mensagem iniciadas": 1337.65, "Visitas ao perfil e à Página": 295.34, "Visitas ao perfil do Instagram": 107.18, "ThruPlay": 53.08, "Sem resultado": 26.32, "Leads": 8.51, "Mensagens/conversas (adicional)": 1785.68}, "metaResultsByType": {"Conversas por mensagem iniciadas": 499.0, "Visitas ao perfil e à Página": 1348.0, "Visitas ao perfil do Instagram": 286.0, "ThruPlay": 1442.0, "Sem resultado": 0.0, "Leads": 1.0}, "topConversationCampaigns": [["[ERICK][ENGAJAMENTO][WHATSAPP][ABO]", 499.0]], "topFollowerCampaigns": [["[ERICK][TRAFEGO][AUDIENCIA]", 286.0], ["[ERICK][ENGAJAMENTO][WHATSAPP][ABO]", 156.0], ["[ERICK][SA-03][GERAL] sidelu", 28.0], ["[ERICK][SA-03] Na Cromit, você encontra soluções para todas as necessidades.", 16.0]], "googleCampaigns": {"Search | Cromit": {"type": "Pesquisa", "spend": 1203.46, "clicks": 2168.0, "impressions": 71574.0, "conversions": 68.29}, "PMAX | Cromit": {"type": "Performance Max", "spend": 3.91, "clicks": 4.0, "impressions": 267.0, "conversions": 0.0}, "Cromit-Performance-Max": {"type": "Performance Max", "spend": 0.0, "clicks": 0.0, "impressions": 0.0, "conversions": 0.0}, "Pesquisa Cromit Site": {"type": "Pesquisa", "spend": 0.0, "clicks": 0.0, "impressions": 0.0, "conversions": 0.0}}};
+const W = DATA.weekly;
+const S = DATA.summary;
+const labels = W.map(w => w.label);
+const colors = { meta:'#0866ff', google:'#4285f4', green:'#16a34a', amber:'#f59e0b', ink:'#1a1a2e', gray:'#94a3b8' };
+
+Chart.defaults.font.family = 'Montserrat';
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#8991a4';
+
+const brl = v => Number(v).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+const num = v => Number(v).toLocaleString('pt-BR');
+const pct = v => Number(v).toFixed(2).replace('.', ',') + '%';
+
+function set(id, value) { const el = document.getElementById(id); if (el) el.textContent = value; }
+function baseScales(formatter) {
+  return {
+    x: { grid: { display:false }, ticks: { color:'#a3a8b5' } },
+    y: { grid: { color:'#f1f4f9' }, ticks: { color:'#a3a8b5', callback: v => formatter ? formatter(v) : v } }
+  };
+}
+function bar(id, data, color, formatter) {
+  const el = document.getElementById(id); if (!el) return;
+  new Chart(el, { type:'bar', data:{ labels, datasets:[{ data, backgroundColor: color, borderRadius:7, borderSkipped:false }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:i => formatter ? formatter(i.raw) : i.raw } } }, scales:baseScales(formatter) }});
+}
+function line(id, data, color, formatter) {
+  const el = document.getElementById(id); if (!el) return;
+  new Chart(el, { type:'line', data:{ labels, datasets:[{ data, borderColor:color, backgroundColor:color+'18', fill:true, tension:.35, pointRadius:4, borderWidth:2.5 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:i => formatter ? formatter(i.raw) : i.raw } } }, scales:baseScales(formatter) }});
+}
+function twoLine(id, a, b, aLabel, bLabel, aColor, bColor, formatter) {
+  const el = document.getElementById(id); if (!el) return;
+  new Chart(el, { type:'line', data:{ labels, datasets:[
+    { label:aLabel, data:a, borderColor:aColor, backgroundColor:aColor+'12', tension:.35, pointRadius:4, borderWidth:2.5 },
+    { label:bLabel, data:b, borderColor:bColor, backgroundColor:bColor+'12', tension:.35, pointRadius:4, borderWidth:2.5 }
+  ]}, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'top', labels:{ boxWidth:12, font:{ size:11 } } }, tooltip:{ callbacks:{ label:i => i.dataset.label + ': ' + (formatter ? formatter(i.raw) : i.raw) } } }, scales:baseScales(formatter) }});
+}
+
+function hydrateText() {
+  set('heroSpend', brl(S.totalSpend)); set('heroMeta', brl(S.metaSpend)); set('heroGoogle', brl(S.googleSpend));
+  set('kpiMetaConv', num(S.metaConversations)); set('kpiMetaConvCost', brl(S.metaCostConversation) + ' por conversa/mensagem consolidada');
+  set('kpiFollowers', num(S.followers)); set('kpiFollowerCost', brl(S.costFollower) + ' por seguidor');
+  set('kpiGConv', String(S.googleConversions).replace('.', ',')); set('kpiGConvCost', brl(S.googleCostConversion) + ' por conversão');
+  set('kpiGClicks', num(S.googleClicks)); set('kpiGCpc', brl(S.googleCpc) + ' por clique');
+  set('insightMeta', num(S.metaConversations) + ' conversas/mensagens');
+  set('insightFollowers', num(S.followers) + ' seguidores');
+  set('insightGoogle', String(S.googleConversions).replace('.', ',') + ' conversões');
+  set('metaSpend', brl(S.metaSpend)); set('metaSpendNote', brl(S.metaSpendBase) + ' das planilhas + ' + brl(S.messageCampaignSpend) + ' adicional');
+  set('metaConversations', num(S.metaConversations)); set('metaCostConversation', brl(S.metaCostConversation) + ' consolidado · ' + num(S.metaConversationsBase) + ' planilhas + ' + num(S.messageCampaignMessages) + ' mensagens');
+  set('metaFollowers', num(S.followers)); set('metaCostFollower', brl(S.costFollower) + ' por seguidor'); set('metaImpressions', num(S.metaImpressions)); set('metaImpressionsNote', num(S.metaImpressionsBase) + ' planilhas + ' + num(S.messageCampaignImpressions) + ' estimadas pelo CPM');
+  set('msgCampaignSpend', brl(S.messageCampaignSpend)); set('msgCampaignMessages', num(S.messageCampaignMessages)); set('msgCampaignCostMessage', brl(S.messageCampaignCostMessage) + ' por mensagem recebida');
+  set('msgCampaignCpm', brl(S.messageCampaignCpm)); set('msgCampaignReach', num(S.messageCampaignReach));
+  set('googleSpend', brl(S.googleSpend)); set('googleConversions', String(S.googleConversions).replace('.', ',')); set('googleCostConversion', brl(S.googleCostConversion) + ' por conversão');
+  set('googleClicks', num(S.googleClicks)); set('googleCpc', brl(S.googleCpc) + ' por clique'); set('googleCtr', pct(S.googleCtr)); set('googleImpressions', num(S.googleImpressions) + ' impressões');
+}
+
+function hydrateTables() {
+  document.getElementById('weeklyTable').innerHTML = `
+    <thead><tr><th>Semana</th><th>Invest. total</th><th>Meta conv.</th><th>Custo/conv.</th><th>Seguidores</th><th>Custo/seg.</th><th>Google conv.</th><th>Custo/conv.</th><th>Cliques</th><th>CPC</th></tr></thead>
+    <tbody>${W.map(w => `<tr><td>${w.label}</td><td>${brl(w.totalSpend)}</td><td>${num(w.metaConversations)}</td><td>${brl(w.metaCostConversation)}</td><td>${num(w.followers)}</td><td>${brl(w.costFollower)}</td><td>${String(w.googleConversions).replace('.', ',')}</td><td>${brl(w.googleCostConversion)}</td><td>${num(w.googleClicks)}</td><td>${brl(w.googleCpc)}</td></tr>`).join('')}</tbody>`;
+  const googleRows = Object.entries(DATA.googleCampaigns).map(([name, c]) => `<tr><td>${name}</td><td>${c.type}</td><td>${brl(c.spend)}</td><td>${num(c.clicks)}</td><td>${String(c.conversions).replace('.', ',')}</td><td>${c.conversions ? brl(c.spend / c.conversions) : 'R$ 0,00'}</td></tr>`).join('');
+  document.getElementById('googleCampaignTable').innerHTML = `<thead><tr><th>Campanha</th><th>Tipo</th><th>Custo</th><th>Cliques</th><th>Conversões</th><th>Custo/conv.</th></tr></thead><tbody>${googleRows}</tbody>`;
+  const topConv = DATA.topConversationCampaigns.map(([name, value]) => `<tr><td>Conversas</td><td>${name}</td><td>${num(value)}</td></tr>`).join('');
+  const topFollowers = DATA.topFollowerCampaigns.filter(([, value]) => value > 0).map(([name, value]) => `<tr><td>Seguidores</td><td>${name}</td><td>${num(value)}</td></tr>`).join('');
+  document.getElementById('metaCampaignTable').innerHTML = `<thead><tr><th>Métrica</th><th>Campanha</th><th>Resultado</th></tr></thead><tbody>${topConv}${topFollowers}</tbody>`;
+}
+
+function initCharts() {
+  const metaSpend = W.map(w => w.metaSpend), googleSpend = W.map(w => w.googleSpend), totalSpend = W.map(w => w.totalSpend);
+  const metaConv = W.map(w => w.metaConversations), metaCostConv = W.map(w => w.metaCostConversation);
+  const followers = W.map(w => w.followers), costFollower = W.map(w => w.costFollower);
+  const gConv = W.map(w => w.googleConversions), gCostConv = W.map(w => w.googleCostConversion), gClicks = W.map(w => w.googleClicks), gCpc = W.map(w => w.googleCpc);
+
+  const spendCanvas = document.getElementById('chartSpendPlatforms');
+  new Chart(spendCanvas, { type:'bar', data:{ labels, datasets:[
+    { label:'Meta Ads', data:metaSpend, backgroundColor:colors.meta, borderRadius:7 },
+    { label:'Google Ads', data:googleSpend, backgroundColor:colors.google, borderRadius:7 }
+  ]}, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'top', labels:{ boxWidth:12 } }, tooltip:{ callbacks:{ label:i => i.dataset.label + ': ' + brl(i.raw) } } }, scales:baseScales(brl) }});
+  line('chartTotalSpend', totalSpend, colors.ink, brl);
+
+  bar('chartMetaConversations', metaConv, colors.meta+'cc', num);
+  line('chartMetaCostConversation', metaCostConv, colors.meta, brl);
+  bar('chartMetaFollowers', followers, colors.green+'cc', num);
+  line('chartMetaCostFollower', costFollower, colors.green, brl);
+  bar('chartGoogleConversions', gConv, colors.google+'cc', v => String(v).replace('.', ','));
+  line('chartGoogleCostConversion', gCostConv, colors.google, brl);
+  bar('chartGoogleClicks', gClicks, colors.google+'aa', num);
+  line('chartGoogleCpc', gCpc, colors.google, brl);
+  twoLine('chartMetaEfficiency', metaCostConv, costFollower, 'Custo/conversa', 'Custo/seguidor', colors.meta, colors.green, brl);
+  twoLine('chartGoogleEfficiency', gCostConv, gCpc, 'Custo/conversão', 'CPC', colors.google, colors.amber, brl);
+
+  const distEntries = Object.entries(DATA.metaSpendByType).sort((a,b) => b[1]-a[1]).slice(0, 6);
+  new Chart(document.getElementById('chartMetaDistribution'), { type:'doughnut', data:{ labels:distEntries.map(e => e[0]), datasets:[{ data:distEntries.map(e => e[1]), backgroundColor:[colors.meta, colors.green, colors.google, colors.amber, colors.gray, '#cbd5e1'], borderWidth:0 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, font:{ size:10 } } }, tooltip:{ callbacks:{ label:i => i.label + ': ' + brl(i.raw) } } } }});
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const tabs = ['overview','meta','google','weekly','insights'];
+  document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('active');
+}
+
+async function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const btn = document.querySelector('.btn-export');
+  btn.textContent = 'Gerando...';
+  btn.disabled = true;
+  const tabs = ['overview','meta','google','weekly','insights'];
+  const pdf = new jsPDF({ orientation:'landscape', unit:'px', format:[1200, 760] });
+  let first = true;
+  for (const tab of tabs) {
+    switchTab(tab);
+    await new Promise(r => setTimeout(r, 450));
+    const panel = document.getElementById('tab-' + tab);
+    const canvas = await html2canvas(panel, { scale:1.35, useCORS:true, backgroundColor:'#f7f8fa' });
+    const img = canvas.toDataURL('image/jpeg', .92);
+    const ratio = canvas.height / canvas.width;
+    const w = 1200, h = Math.max(760, w * ratio);
+    if (!first) pdf.addPage([1200, h]);
+    pdf.addImage(img, 'JPEG', 0, 0, w, w * ratio);
+    first = false;
+  }
+  pdf.save('relatorio-cromit-abril-2026.pdf');
+  switchTab('overview');
+  btn.textContent = 'Exportar PDF';
+  btn.disabled = false;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  hydrateText();
+  hydrateTables();
+  initCharts();
+});
+</script>
+</body>
+</html>
